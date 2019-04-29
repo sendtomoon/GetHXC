@@ -1,1 +1,6 @@
 /target/
+.project
+/settings/
+*.properties
+org.eclipse.jdt.core.prefs
+org.eclipse.m2e.core.prefs

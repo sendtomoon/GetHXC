@@ -69,7 +69,7 @@ public class Controller {
 	@SuppressWarnings("unchecked")
 	private Map<String, String> getHeader() {
 		Properties properties = this.loadProp("header.properties");
-		Map map = new LinkedHashMap<String, String>();
+		Map<String, String> map = new LinkedHashMap<String, String>();
 		for (Entry<Object, Object> entry : properties.entrySet()) {
 			map.put((String) entry.getKey(), (String) entry.getValue());
 		}
