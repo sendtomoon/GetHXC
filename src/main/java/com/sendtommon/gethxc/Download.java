@@ -1,8 +1,5 @@
 package com.sendtommon.gethxc;
 
-import static org.bson.codecs.configuration.CodecRegistries.fromProviders;
-import static org.bson.codecs.configuration.CodecRegistries.fromRegistries;
-
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
@@ -15,54 +12,28 @@ import java.net.InetSocketAddress;
 import java.net.Proxy;
 import java.net.URL;
 import java.nio.channels.FileChannel;
-import java.util.Arrays;
 
-import org.bson.codecs.configuration.CodecRegistry;
-import org.bson.codecs.pojo.PojoCodecProvider;
-
-import static com.mongodb.client.model.Filters.*;
-
-import com.mongodb.MongoClientSettings;
-import com.mongodb.MongoCredential;
-import com.mongodb.ServerAddress;
-import com.mongodb.client.MongoClient;
-import com.mongodb.client.MongoClients;
-import com.mongodb.client.MongoCollection;
-import com.mongodb.client.MongoDatabase;
 import com.sendtommon.gethxc.config.Config;
 import com.sendtommon.gethxc.dto.GetListByTagRespDataDTO;
 import com.sendtommon.gethxc.dto.M3U8DTO;
-import static com.mongodb.client.model.Updates.*;
+import com.sendtommon.gethxc.mongo.MongoUtils;
 
 public class Download {
 	public static int connTimeout = 30 * 60 * 1000;
 	public static int readTimeout = 30 * 60 * 1000;
 
 	public static void main(String[] args) {
-		MongoCredential credential = MongoCredential.createCredential(Config.value("mongodb.user"),
-				Config.value("mongodb.database"), Config.value("mongodb.pwd").toCharArray());
-		MongoClient mongoClient = MongoClients.create(MongoClientSettings.builder()
-				.applyToClusterSettings(
-						builder -> builder.hosts(Arrays.asList(new ServerAddress(Config.value("mongodb.address"),
-								Integer.valueOf(Config.value("mongodb.port"))))))
-				.credential(credential).build());
-		MongoDatabase database = mongoClient.getDatabase("hanxiucao");
-		MongoCollection<GetListByTagRespDataDTO> collection = database.getCollection("video_list",
-				GetListByTagRespDataDTO.class);
-		CodecRegistry pojoCodecRegistry = fromRegistries(MongoClientSettings.getDefaultCodecRegistry(),
-				fromProviders(PojoCodecProvider.builder().automatic(true).build()));
-		collection = collection.withCodecRegistry(pojoCodecRegistry);
 		int i = 1;
 		while (true) {
 			System.err.println(i);
-			GetListByTagRespDataDTO dto = collection.find(eq("downloaded", 0)).first();
+			GetListByTagRespDataDTO dto = MongoUtils.first("downloaded", 0);
 			if (null == dto) {
 				break;
 			}
 			try {
 				dto.setFileName(dto.getName().replace(" ", "_"));
 				Download.download(dto.getUrl(), dto.getFileName());
-				collection.updateOne(eq("_id", dto.getId()), combine(set("downloaded", 1)));
+				MongoUtils.updateDownRes(dto.getId());
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
