@@ -20,18 +20,19 @@ import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoClients;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
+import com.sendtommon.gethxc.config.Config;
 import com.sendtommon.gethxc.dto.GetListByTagRespDataDTO;
 
-public class MongoUtils {
+public class MongoUtils { 
 	private static MongoDatabase database = null;
 	private static CodecRegistry pojoCodecRegistry = null;
 	static {
-		MongoCredential credential = MongoCredential.createCredential(System.getProperty("mongodb.user"),
-				System.getProperty("mongodb.database"), System.getProperty("mongodb.pwd").toCharArray());
+		MongoCredential credential = MongoCredential.createCredential(Config.value("mongodb.user"),
+				Config.value("mongodb.database"), Config.value("mongodb.pwd").toCharArray());
 		MongoClient mongoClient = MongoClients.create(MongoClientSettings.builder()
 				.applyToClusterSettings(
-						builder -> builder.hosts(Arrays.asList(new ServerAddress(System.getProperty("mongodb.address"),
-								Integer.valueOf(System.getProperty("mongodb.port"))))))
+						builder -> builder.hosts(Arrays.asList(new ServerAddress(Config.value("mongodb.address"),
+								Integer.valueOf(Config.value("mongodb.port"))))))
 				.credential(credential).build());
 		database = mongoClient.getDatabase("hanxiucao");
 		pojoCodecRegistry = fromRegistries(MongoClientSettings.getDefaultCodecRegistry(),
@@ -43,6 +44,13 @@ public class MongoUtils {
 				GetListByTagRespDataDTO.class);
 		collection = collection.withCodecRegistry(pojoCodecRegistry);
 		collection.insertMany(list);
+	}
+
+	public static void insertOne(GetListByTagRespDataDTO list) {
+		MongoCollection<GetListByTagRespDataDTO> collection = database.getCollection("video_list",
+				GetListByTagRespDataDTO.class);
+		collection = collection.withCodecRegistry(pojoCodecRegistry);
+		collection.insertOne(list);
 	}
 
 	public static GetListByTagRespDataDTO first(String filed, Object value) {

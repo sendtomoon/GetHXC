@@ -1,10 +1,5 @@
 package com.sendtommon.gethxc;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.Map.Entry;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -24,7 +19,45 @@ import com.sendtommon.gethxc.mongo.MongoUtils;
 public class Controller {
 
 	public void mainService() {
-		GetListByTagReqDTO glbt = new GetListByTagReqDTO(1, 6000, null, 0, new OrdertextDTO("AddTime", "desc"));
+		// 循环控制分页
+		for (int i = 0; i <= 99999; i++) {
+			// 每页行数
+			int rows = i * 20;
+			// 获取结果
+			GetListByTagRespDTO glbr = this.request(rows);
+			List<GetListByTagRespDataDTO> list = glbr.getData();
+			// 判断结果是否为空
+			if (CollectionUtils.isNotEmpty(list)) {
+				this.insert(list);// 结果不为空则插入数据
+			} else {
+				break;
+			}
+		}
+	}
+
+	/**
+	 * 插入数据
+	 * 
+	 * 
+	 * @param list
+	 */
+	private void insert(List<GetListByTagRespDataDTO> list) {
+		for (GetListByTagRespDataDTO dataDTO : list) {
+			GetListByTagRespDataDTO result = MongoUtils.first("iD", dataDTO.getID());
+			if (null == result) {
+				MongoUtils.insertOne(dataDTO);
+			}
+		}
+	}
+
+	/**
+	 * 请求数据并解析json
+	 * 
+	 * @param rows
+	 * @return
+	 */
+	private GetListByTagRespDTO request(int rows) {
+		GetListByTagReqDTO glbt = new GetListByTagReqDTO(1, 20, null, rows, new OrdertextDTO("SeeCount", "desc"));
 		String str = null;
 		try {
 			str = HttpUtils.post(Config.value("getListByTag"), JSON.toJSONString(glbt), null, this.getHeader());
@@ -32,36 +65,20 @@ public class Controller {
 			e.printStackTrace();
 		}
 		GetListByTagRespDTO glbr = JSON.parseObject(str, GetListByTagRespDTO.class);
-		if (CollectionUtils.isNotEmpty(glbr.getData())) {
-			this.insertMongodb(glbr.getData());
-		}
+		return glbr;
 	}
 
-	private Properties loadProp(String fileName) {
-		InputStream is;
-		try {
-			is = new FileInputStream(new File(Config.value("user.dir") + "//src//main//resources//" + fileName));
-			Properties properties = new Properties();
-			properties.load(is);
-			return properties;
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		return null;
-	}
-
+	/**
+	 * post请求头信息
+	 * 
+	 * @return
+	 */
 	private Map<String, String> getHeader() {
-		Properties properties = this.loadProp("header.properties");
+		Properties properties = Config.getHeader();
 		Map<String, String> map = new LinkedHashMap<String, String>();
 		for (Entry<Object, Object> entry : properties.entrySet()) {
 			map.put((String) entry.getKey(), (String) entry.getValue());
 		}
 		return map;
-	}
-
-	private void insertMongodb(List<GetListByTagRespDataDTO> list) {
-		MongoUtils.insertMany(list);
 	}
 }
