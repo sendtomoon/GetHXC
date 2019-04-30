@@ -2,10 +2,20 @@ package com.sendtommon.gethxc.dto;
 
 import java.util.Date;
 
+import org.bson.types.ObjectId;
+
 public class GetListByTagRespDataDTO extends BaseDTO {
 
-	private static final long serialVersionUID = 6538968052211907858L;
+	public ObjectId getId() {
+		return id;
+	}
 
+	public void setId(ObjectId id) {
+		this.id = id;
+	}
+
+	private static final long serialVersionUID = 6538968052211907858L;
+	private ObjectId id;
 	private Date AddTime;
 	private Integer CollectionCount;
 	private String CoverImgUrl;
@@ -24,6 +34,25 @@ public class GetListByTagRespDataDTO extends BaseDTO {
 	private Integer TypeID;
 	private String TypeName;
 	private String Url;
+	/** 是否已下载过 0否 1是 */
+	private Integer downloaded = 0;
+	private String fileName;
+
+	public String getFileName() {
+		return fileName;
+	}
+
+	public void setFileName(String fileName) {
+		this.fileName = fileName;
+	}
+
+	public Integer getDownloaded() {
+		return downloaded;
+	}
+
+	public void setDownloaded(Integer downloaded) {
+		this.downloaded = downloaded;
+	}
 
 	public Date getAddTime() {
 		return AddTime;

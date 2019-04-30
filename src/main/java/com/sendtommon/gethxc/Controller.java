@@ -87,7 +87,6 @@ public class Controller {
 		return null;
 	}
 
-	@SuppressWarnings("unchecked")
 	private Map<String, String> getHeader() {
 		Properties properties = this.loadProp("header.properties");
 		Map<String, String> map = new LinkedHashMap<String, String>();

@@ -1,8 +1,12 @@
 package com.sendtommon.gethxc;
 
+import static org.bson.codecs.configuration.CodecRegistries.fromProviders;
+import static org.bson.codecs.configuration.CodecRegistries.fromRegistries;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -12,14 +16,89 @@ import java.net.InetSocketAddress;
 import java.net.Proxy;
 import java.net.URL;
 import java.nio.channels.FileChannel;
+import java.util.Arrays;
+import java.util.Properties;
+import java.util.Map.Entry;
 
+import org.bson.codecs.configuration.CodecRegistry;
+import org.bson.codecs.pojo.PojoCodecProvider;
+import org.bson.types.ObjectId;
+
+import static com.mongodb.client.model.Filters.*;
+
+import com.mongodb.MongoClientSettings;
+import com.mongodb.MongoCredential;
+import com.mongodb.ServerAddress;
+import com.mongodb.client.MongoClient;
+import com.mongodb.client.MongoClients;
+import com.mongodb.client.MongoCollection;
+import com.mongodb.client.MongoDatabase;
+import com.sendtommon.gethxc.dto.GetListByTagRespDataDTO;
 import com.sendtommon.gethxc.dto.M3U8DTO;
+import static com.mongodb.client.model.Updates.*;
 
 public class Download {
 	public static int connTimeout = 30 * 60 * 1000;
 	public static int readTimeout = 30 * 60 * 1000;
 
-	public static void download(String m3u8url) {
+	static {
+		try {
+			InputStream is = new FileInputStream(
+					new File(System.getProperty("user.dir") + "//src//main//resources//config.properties"));
+			Properties properties = new Properties();
+			properties.load(is);
+			for (Entry<Object, Object> entry : properties.entrySet()) {
+				System.setProperty((String) entry.getKey(), (String) entry.getValue());
+			}
+
+			is = new FileInputStream(
+					new File(System.getProperty("user.dir") + "//src//main//resources//mongodb.properties"));
+			properties = new Properties();
+			properties.load(is);
+			for (Entry<Object, Object> entry : properties.entrySet()) {
+				System.setProperty((String) entry.getKey(), (String) entry.getValue());
+			}
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+
+	public static void main(String[] args) {
+		MongoCredential credential = MongoCredential.createCredential(System.getProperty("mongodb.user"),
+				System.getProperty("mongodb.database"), System.getProperty("mongodb.pwd").toCharArray());
+		MongoClient mongoClient = MongoClients.create(MongoClientSettings.builder()
+				.applyToClusterSettings(
+						builder -> builder.hosts(Arrays.asList(new ServerAddress(System.getProperty("mongodb.address"),
+								Integer.valueOf(System.getProperty("mongodb.port"))))))
+				.credential(credential).build());
+		MongoDatabase database = mongoClient.getDatabase("hanxiucao");
+		MongoCollection<GetListByTagRespDataDTO> collection = database.getCollection("video_list",
+				GetListByTagRespDataDTO.class);
+		CodecRegistry pojoCodecRegistry = fromRegistries(MongoClientSettings.getDefaultCodecRegistry(),
+				fromProviders(PojoCodecProvider.builder().automatic(true).build()));
+		collection = collection.withCodecRegistry(pojoCodecRegistry);
+		int i = 1;
+		while (true) {
+			System.err.println(i);
+			GetListByTagRespDataDTO dto = collection.find(eq("downloaded", 0)).first();
+			if (null == dto) {
+				break;
+			}
+			try {
+				dto.setFileName(dto.getName().replace(" ", "_"));
+				Download.download(dto.getUrl(), dto.getFileName());
+				collection.updateOne(eq("_id", dto.getId()), combine(set("downloaded", 1)));
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			i++;
+		}
+
+	}
+
+	private static void download(String m3u8url, String fileName) {
 		File tfile = new File(System.getProperty("tempDir"));
 		if (!tfile.exists()) {
 			tfile.mkdirs();
@@ -34,7 +113,7 @@ public class Download {
 				try {
 					URL url = new URL(basePath + m3U8Ts.getFile());
 					Proxy proxy = new Proxy(Proxy.Type.HTTP, new InetSocketAddress(System.getProperty("proxyAddress"),
-							Integer.valueOf(System.getProperty("proxyProxy"))));
+							Integer.valueOf(System.getProperty("proxyPort"))));
 					HttpURLConnection conn = (HttpURLConnection) url.openConnection(proxy);
 					conn.setConnectTimeout(connTimeout);
 					conn.setReadTimeout(readTimeout);
@@ -64,7 +143,7 @@ public class Download {
 			}
 		});
 		System.out.println("文件下载完毕!");
-		mergeFiles(tfile.listFiles(), "test.ts");
+		mergeFiles(tfile.listFiles(), System.getProperty("downloadDir") + fileName + ".ts");
 	}
 
 	public static M3U8DTO getM3U8ByURL(String m3u8URL) {
