@@ -6,16 +6,7 @@ import org.bson.types.ObjectId;
 
 public class GetListByTagRespDataDTO extends BaseDTO {
 
-	public ObjectId getId() {
-		return id;
-	}
-
-	public void setId(ObjectId id) {
-		this.id = id;
-	}
-
 	private static final long serialVersionUID = 6538968052211907858L;
-	private ObjectId id;
 	private Date AddTime;
 	private Integer CollectionCount;
 	private String CoverImgUrl;

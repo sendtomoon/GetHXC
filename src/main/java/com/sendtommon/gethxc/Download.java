@@ -13,6 +13,8 @@ import java.net.Proxy;
 import java.net.URL;
 import java.nio.channels.FileChannel;
 
+import org.apache.commons.lang3.StringUtils;
+
 import com.sendtommon.gethxc.config.Config;
 import com.sendtommon.gethxc.dto.GetListByTagRespDataDTO;
 import com.sendtommon.gethxc.dto.M3U8DTO;
@@ -23,31 +25,39 @@ public class Download {
 	public static int readTimeout = 30 * 60 * 1000;
 
 	public static void main(String[] args) {
-		int i = 1;
+//		MongoUtils.updateMany();
+		int i = 148;
 		while (true) {
-			System.err.println(i);
-			GetListByTagRespDataDTO dto = MongoUtils.first("downloaded", 0);
+			GetListByTagRespDataDTO dto = MongoUtils.firstName();
 			if (null == dto) {
 				break;
 			}
+			deleteDir(new File(Config.value("tempDir")));
+			System.err.println("当前下载第" + i + "个。数量：" + dto.getSeeCount());
 			try {
-				dto.setFileName(dto.getName().replace(" ", "_"));
+				dto.setFileName(getName(i, dto.getName()));
 				Download.download(dto.getUrl(), dto.getFileName());
-				MongoUtils.updateDownRes(dto.getId());
+				MongoUtils.updateDownRes(dto.getID());
 			} catch (Exception e) {
 				e.printStackTrace();
+				MongoUtils.updateFail(dto.getID());
+				continue;
+			} finally {
+				i++;
 			}
-			i++;
 		}
 
 	}
 
-	private static void download(String m3u8url, String fileName) {
+	private static void download(String m3u8url, String fileName) throws Exception {
 		File tfile = new File(Config.value("tempDir"));
 		if (!tfile.exists()) {
 			tfile.mkdirs();
 		}
 		M3U8DTO m3u8ByURL = getM3U8ByURL(m3u8url);
+		if (null == m3u8ByURL) {
+			throw new Exception("资源不存在" + "   " + fileName);
+		}
 		String basePath = m3u8ByURL.getBasepath();
 		m3u8ByURL.getTsList().stream().parallel().forEach(m3U8Ts -> {
 			File file = new File(Config.value("tempDir") + File.separator + m3U8Ts.getFile());
@@ -92,7 +102,8 @@ public class Download {
 
 	public static M3U8DTO getM3U8ByURL(String m3u8URL) {
 		try {
-			Proxy proxy = new Proxy(Proxy.Type.HTTP, new InetSocketAddress("127.0.0.1", 1080));
+			Proxy proxy = new Proxy(Proxy.Type.HTTP,
+					new InetSocketAddress(Config.value("proxyAddress"), Integer.valueOf(Config.value("proxyPort"))));
 			HttpURLConnection conn = (HttpURLConnection) new URL(m3u8URL).openConnection(proxy);
 			if (conn.getResponseCode() == 200) {
 				String realUrl = conn.getURL().toString();
@@ -169,6 +180,28 @@ public class Download {
 		}
 
 		return true;
+	}
+
+	private static String getName(int i, String filename) {
+		String no = String.valueOf(i);
+		while (no.length() < 5) {
+			no = "0" + no;
+		}
+		return no + "_" + filename.trim().replace(" ", "_");
+	}
+
+	private static boolean deleteDir(File dir) {
+		if (dir.isDirectory()) {
+			String[] children = dir.list();
+			for (int i = 0; i < children.length; i++) {
+				boolean success = deleteDir(new File(dir, children[i]));
+				if (!success) {
+					return false;
+				}
+			}
+		}
+		// 目录此时为空，可以删除
+		return dir.delete();
 	}
 
 }

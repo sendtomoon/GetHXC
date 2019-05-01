@@ -1,6 +1,7 @@
 package com.sendtommon.gethxc.mongo;
 
 import static com.mongodb.client.model.Filters.eq;
+import static com.mongodb.client.model.Filters.and;
 import static com.mongodb.client.model.Updates.combine;
 import static com.mongodb.client.model.Updates.set;
 import static org.bson.codecs.configuration.CodecRegistries.fromProviders;
@@ -11,7 +12,6 @@ import java.util.List;
 
 import org.bson.codecs.configuration.CodecRegistry;
 import org.bson.codecs.pojo.PojoCodecProvider;
-import org.bson.types.ObjectId;
 
 import com.mongodb.MongoClientSettings;
 import com.mongodb.MongoCredential;
@@ -20,10 +20,11 @@ import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoClients;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
+import com.mongodb.client.model.Sorts;
 import com.sendtommon.gethxc.config.Config;
 import com.sendtommon.gethxc.dto.GetListByTagRespDataDTO;
 
-public class MongoUtils { 
+public class MongoUtils {
 	private static MongoDatabase database = null;
 	private static CodecRegistry pojoCodecRegistry = null;
 	static {
@@ -60,11 +61,32 @@ public class MongoUtils {
 		return collection.find(eq(filed, value)).first();
 	}
 
-	public static void updateDownRes(ObjectId id) {
+	public static GetListByTagRespDataDTO firstName() {
 		MongoCollection<GetListByTagRespDataDTO> collection = database.getCollection("video_list",
 				GetListByTagRespDataDTO.class);
 		collection = collection.withCodecRegistry(pojoCodecRegistry);
-		collection.updateOne(eq("_id", id), combine(set("downloaded", 1)));
+		return collection.find(and(eq("fail", 0), eq("downloaded", 0))).sort(Sorts.descending("seeCount")).first();
+	}
+
+	public static void updateDownRes(Object id) {
+		MongoCollection<GetListByTagRespDataDTO> collection = database.getCollection("video_list",
+				GetListByTagRespDataDTO.class);
+		collection = collection.withCodecRegistry(pojoCodecRegistry);
+		collection.updateOne(eq("iD", id), combine(set("downloaded", 1)));
+	}
+
+	public static void updateFail(Object id) {
+		MongoCollection<GetListByTagRespDataDTO> collection = database.getCollection("video_list",
+				GetListByTagRespDataDTO.class);
+		collection = collection.withCodecRegistry(pojoCodecRegistry);
+		collection.updateOne(eq("iD", id), combine(set("fail", 1)));
+	}
+
+	public static void updateMany() {
+		MongoCollection<GetListByTagRespDataDTO> collection = database.getCollection("video_list",
+				GetListByTagRespDataDTO.class);
+		collection = collection.withCodecRegistry(pojoCodecRegistry);
+		collection.updateMany(eq("downloaded", 0), combine(set("fail", 0)));
 	}
 
 }

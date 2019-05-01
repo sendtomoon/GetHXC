@@ -57,7 +57,7 @@ public class Controller {
 	 * @return
 	 */
 	private GetListByTagRespDTO request(int rows) {
-		GetListByTagReqDTO glbt = new GetListByTagReqDTO(1, 20, null, rows, new OrdertextDTO("SeeCount", "desc"));
+		GetListByTagReqDTO glbt = new GetListByTagReqDTO(1, 20, null, rows, new OrdertextDTO("AddTime", "desc"));
 		String str = null;
 		try {
 			str = HttpUtils.post(Config.value("getListByTag"), JSON.toJSONString(glbt), null, this.getHeader());
