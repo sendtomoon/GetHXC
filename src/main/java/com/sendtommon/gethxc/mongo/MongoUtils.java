@@ -27,6 +27,7 @@ import com.sendtommon.gethxc.dto.GetListByTagRespDataDTO;
 public class MongoUtils {
 	private static MongoDatabase database = null;
 	private static CodecRegistry pojoCodecRegistry = null;
+	private static MongoCollection<GetListByTagRespDataDTO> collection = null;
 	static {
 		MongoCredential credential = MongoCredential.createCredential(Config.value("mongodb.user"),
 				Config.value("mongodb.database"), Config.value("mongodb.pwd").toCharArray());
@@ -38,6 +39,9 @@ public class MongoUtils {
 		database = mongoClient.getDatabase("hanxiucao");
 		pojoCodecRegistry = fromRegistries(MongoClientSettings.getDefaultCodecRegistry(),
 				fromProviders(PojoCodecProvider.builder().automatic(true).build()));
+		collection = database.getCollection("video_list", GetListByTagRespDataDTO.class);
+		collection = collection.withCodecRegistry(pojoCodecRegistry);
+
 	}
 
 	public static void insertMany(List<GetListByTagRespDataDTO> list) {
@@ -54,11 +58,14 @@ public class MongoUtils {
 		collection.insertOne(list);
 	}
 
-	public static GetListByTagRespDataDTO first(String filed, Object value) {
-		MongoCollection<GetListByTagRespDataDTO> collection = database.getCollection("video_list",
-				GetListByTagRespDataDTO.class);
-		collection = collection.withCodecRegistry(pojoCodecRegistry);
-		return collection.find(eq(filed, value)).first();
+	/**
+	 * 
+	 * @param filed
+	 * @param value
+	 * @return
+	 */
+	public static GetListByTagRespDataDTO isExistOfId(Integer id) {
+		return collection.find(eq("iD", id)).first();
 	}
 
 	public static GetListByTagRespDataDTO firstName() {

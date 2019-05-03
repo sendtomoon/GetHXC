@@ -43,7 +43,7 @@ public class Controller {
 	 */
 	private void insert(List<GetListByTagRespDataDTO> list) {
 		for (GetListByTagRespDataDTO dataDTO : list) {
-			GetListByTagRespDataDTO result = MongoUtils.first("iD", dataDTO.getID());
+			GetListByTagRespDataDTO result = MongoUtils.isExistOfId(dataDTO.getID());
 			if (null == result) {
 				MongoUtils.insertOne(dataDTO);
 			}
