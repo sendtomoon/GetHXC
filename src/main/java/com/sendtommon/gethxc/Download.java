@@ -13,8 +13,6 @@ import java.net.Proxy;
 import java.net.URL;
 import java.nio.channels.FileChannel;
 
-import org.apache.commons.lang3.StringUtils;
-
 import com.sendtommon.gethxc.config.Config;
 import com.sendtommon.gethxc.dto.GetListByTagRespDataDTO;
 import com.sendtommon.gethxc.dto.M3U8DTO;
