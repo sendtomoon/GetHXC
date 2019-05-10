@@ -51,6 +51,11 @@ public class MongoUtils {
 		collection.insertMany(list);
 	}
 
+	/**
+	 * 插入一条对象
+	 * 
+	 * @param list
+	 */
 	public static void insertOne(GetListByTagRespDataDTO list) {
 		MongoCollection<GetListByTagRespDataDTO> collection = database.getCollection("video_list",
 				GetListByTagRespDataDTO.class);
@@ -59,6 +64,7 @@ public class MongoUtils {
 	}
 
 	/**
+	 * 通过iD获取对象
 	 * 
 	 * @param filed
 	 * @param value
@@ -94,6 +100,13 @@ public class MongoUtils {
 				GetListByTagRespDataDTO.class);
 		collection = collection.withCodecRegistry(pojoCodecRegistry);
 		collection.updateMany(eq("downloaded", 0), combine(set("fail", 0)));
+	}
+
+	public static void updateSeeCount(Object id, Integer seeCount) {
+		MongoCollection<GetListByTagRespDataDTO> collection = database.getCollection("video_list",
+				GetListByTagRespDataDTO.class);
+		collection = collection.withCodecRegistry(pojoCodecRegistry);
+		collection.updateOne(eq("iD", id), combine(set("seeCount", seeCount)));
 	}
 
 }

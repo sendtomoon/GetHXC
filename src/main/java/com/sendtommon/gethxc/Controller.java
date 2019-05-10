@@ -1,10 +1,6 @@
 package com.sendtommon.gethxc;
 
-import java.util.Map.Entry;
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.Properties;
 
 import org.apache.commons.collections4.CollectionUtils;
 
@@ -15,37 +11,39 @@ import com.sendtommon.gethxc.dto.GetListByTagRespDTO;
 import com.sendtommon.gethxc.dto.GetListByTagRespDataDTO;
 import com.sendtommon.gethxc.dto.OrdertextDTO;
 import com.sendtommon.gethxc.mongo.MongoUtils;
+import com.sendtommon.gethxc.utils.HeaderUtils;
 
+/**
+ * @author lbt42
+ *
+ */
 public class Controller {
 
 	public void mainService() {
-		// 循环控制分页
-		for (int i = 0; i <= 99999; i++) {
-			// 每页行数
-			int rows = i * 20;
-			// 获取结果
-			GetListByTagRespDTO glbr = this.request(rows);
-			List<GetListByTagRespDataDTO> list = glbr.getData();
-			// 判断结果是否为空
-			if (CollectionUtils.isNotEmpty(list)) {
-				this.insert(list);// 结果不为空则插入数据
-			} else {
-				break;
-			}
+		// 一次性获取所有结果
+		GetListByTagRespDTO glbr = this.request(99999);
+		List<GetListByTagRespDataDTO> list = glbr.getData();
+		if (CollectionUtils.isNotEmpty(list)) {
+			this.insert(list);// 结果不为空则插入数据
 		}
 	}
 
 	/**
 	 * 插入数据
 	 * 
-	 * 
 	 * @param list
 	 */
 	private void insert(List<GetListByTagRespDataDTO> list) {
+		System.err.println("总记录数" + list.size());
 		for (GetListByTagRespDataDTO dataDTO : list) {
-			GetListByTagRespDataDTO result = MongoUtils.isExistOfId(dataDTO.getID());
+			GetListByTagRespDataDTO result = MongoUtils.isExistOfId(dataDTO.getID());// 通过id获取对象，判断对象是否已经存在
+			// 如果记录不存在，则新增一条，如果记录已经存在，则更新阅读数
 			if (null == result) {
 				MongoUtils.insertOne(dataDTO);
+				System.err.println("插入一条成功");
+			} else {
+				this.updateSeeCount(dataDTO);
+				System.err.println("更新一条成功");
 			}
 		}
 	}
@@ -60,7 +58,8 @@ public class Controller {
 		GetListByTagReqDTO glbt = new GetListByTagReqDTO(1, 20, null, rows, new OrdertextDTO("AddTime", "desc"));
 		String str = null;
 		try {
-			str = HttpUtils.post(Config.value("getListByTag"), JSON.toJSONString(glbt), null, this.getHeader());
+			str = HttpUtils.post(Config.value("getListByTag"), JSON.toJSONString(glbt), "127.0.0.1:1080",
+					HeaderUtils.getHeader());
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -69,16 +68,12 @@ public class Controller {
 	}
 
 	/**
-	 * post请求头信息
+	 * 修改观看人数
 	 * 
-	 * @return
+	 * @param dataDTO
 	 */
-	private Map<String, String> getHeader() {
-		Properties properties = Config.getHeader();
-		Map<String, String> map = new LinkedHashMap<String, String>();
-		for (Entry<Object, Object> entry : properties.entrySet()) {
-			map.put((String) entry.getKey(), (String) entry.getValue());
-		}
-		return map;
+	private void updateSeeCount(GetListByTagRespDataDTO dataDTO) {
+		MongoUtils.updateSeeCount(dataDTO.getID(), dataDTO.getSeeCount());
 	}
+
 }
