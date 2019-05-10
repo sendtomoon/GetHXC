@@ -55,11 +55,10 @@ public class Controller {
 	 * @return
 	 */
 	private GetListByTagRespDTO request(int rows) {
-		GetListByTagReqDTO glbt = new GetListByTagReqDTO(1, 20, null, rows, new OrdertextDTO("AddTime", "desc"));
+		GetListByTagReqDTO glbt = new GetListByTagReqDTO(1, 99999, null, 0, new OrdertextDTO("AddTime", "desc"));
 		String str = null;
 		try {
-			str = HttpUtils.post(Config.value("getListByTag"), JSON.toJSONString(glbt), "127.0.0.1:1080",
-					HeaderUtils.getHeader());
+			str = HttpUtils.post(Config.value("getListByTag"), JSON.toJSONString(glbt), "127.0.0.1:1080", HeaderUtils.getHeader());
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
