@@ -10,11 +10,11 @@ import static org.bson.codecs.configuration.CodecRegistries.fromRegistries;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.function.Consumer;
 
 import org.bson.codecs.configuration.CodecRegistry;
 import org.bson.codecs.pojo.PojoCodecProvider;
 
-import com.mongodb.Block;
 import com.mongodb.MongoClientSettings;
 import com.mongodb.MongoCredential;
 import com.mongodb.ServerAddress;
@@ -54,7 +54,7 @@ public class MongoDAO {
 	}
 
 	/**
-	 * ²åÈëÒ»Ìõ¶ÔÏó
+	 * ï¿½ï¿½ï¿½ï¿½Ò»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 	 * 
 	 * @param list
 	 */
@@ -63,7 +63,7 @@ public class MongoDAO {
 	}
 
 	/**
-	 * Í¨¹ýiD»ñÈ¡¶ÔÏó
+	 * Í¨ï¿½ï¿½iDï¿½ï¿½È¡ï¿½ï¿½ï¿½ï¿½
 	 * 
 	 * @param filed
 	 * @param value
@@ -75,13 +75,14 @@ public class MongoDAO {
 
 	public static List<GetListByTagRespDataDTO> firstName() {
 		List<GetListByTagRespDataDTO> list = new ArrayList<GetListByTagRespDataDTO>();
-		Block<GetListByTagRespDataDTO> printBlock = new Block<GetListByTagRespDataDTO>() {
+		Consumer<GetListByTagRespDataDTO> sdfs = new Consumer<GetListByTagRespDataDTO>() {
 			@Override
-			public void apply(GetListByTagRespDataDTO t) {
+			public void accept(GetListByTagRespDataDTO t) {
 				list.add(t);
 			}
+
 		};
-		collection.find(and(eq("downloaded", 0))).sort(Sorts.descending("seeCount")).forEach(printBlock);
+		collection.find(and(eq("downloaded", 0))).sort(Sorts.descending("seeCount")).forEach(sdfs);
 		return list;
 	}
 
@@ -98,7 +99,7 @@ public class MongoDAO {
 	}
 
 	/**
-	 * ÐÞ¸Ä¹Û¿´´ÎÊýºÍÏÂÔØµØÖ·
+	 * ï¿½Þ¸Ä¹Û¿ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Øµï¿½Ö·
 	 * 
 	 * @param id
 	 * @param seeCount
@@ -109,7 +110,7 @@ public class MongoDAO {
 	}
 
 	/**
-	 * ÐÞ¸ÄÎÄ¼þÃûµÄseq
+	 * ï¿½Þ¸ï¿½ï¿½Ä¼ï¿½ï¿½ï¿½ï¿½ï¿½seq
 	 * 
 	 * @param id
 	 * @param seeCount
@@ -120,22 +121,28 @@ public class MongoDAO {
 	}
 
 	/**
-	 * Í¨¹ýseeCountÅÅÐò»ñÈ¡ÁÐ±í
+	 * Í¨ï¿½ï¿½seeCountï¿½ï¿½ï¿½ï¿½ï¿½È¡ï¿½Ð±ï¿½
 	 * 
 	 * @return
 	 */
 	public static List<GetListByTagRespDataDTO> getOrderBySeeCount() {
 		List<GetListByTagRespDataDTO> list = new ArrayList<GetListByTagRespDataDTO>();
-		Block<GetListByTagRespDataDTO> printBlock = new Block<GetListByTagRespDataDTO>() {
+		Consumer<GetListByTagRespDataDTO> sdfs = new Consumer<GetListByTagRespDataDTO>() {
 			@Override
-			public void apply(GetListByTagRespDataDTO t) {
+			public void accept(GetListByTagRespDataDTO t) {
 				list.add(t);
 			}
+
 		};
-		collection.find().sort(Sorts.descending("seeCount")).forEach(printBlock);
+		collection.find().sort(Sorts.descending("seeCount")).forEach(sdfs);
 		return list;
 	}
 
+	/**
+	 * ï¿½ï¿½È¡ï¿½ï¿½Æµï¿½ï¿½Ò»ï¿½ï¿½ï¿½ï¿½ï¿½
+	 * 
+	 * @return
+	 */
 	public static Integer nextvalue() {
 		int i = collection.find().sort(Sorts.descending("seq")).first().getSeq();
 		i++;

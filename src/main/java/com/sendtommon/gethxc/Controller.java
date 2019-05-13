@@ -15,8 +15,6 @@ import com.sendtommon.gethxc.utils.HeaderUtils;
 import com.sendtommon.gethxc.utils.HttpUtils;
 
 /**
- * @author lbt42
- *
  */
 public class Controller {
 

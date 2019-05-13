@@ -18,6 +18,7 @@ import com.sendtommon.gethxc.config.Config;
 import com.sendtommon.gethxc.dto.GetListByTagRespDataDTO;
 import com.sendtommon.gethxc.dto.M3U8DTO;
 import com.sendtommon.gethxc.mongo.MongoDAO;
+import com.sendtommon.gethxc.utils.DateUtils;
 
 public class Download {
 	public static int connTimeout = 60 * 1000;
@@ -27,7 +28,7 @@ public class Download {
 		List<GetListByTagRespDataDTO> list = MongoDAO.firstName();
 		for (int i = 0; i < list.size(); i++) {
 			GetListByTagRespDataDTO dto = list.get(i);
-			System.err.println("当前下载第" + dto.getSeq() + "个。数量：" + dto.getSeeCount());
+			System.err.println(DateUtils.date() + " 当前下载第" + dto.getSeq() + "个。数量：" + dto.getSeeCount());
 			try {
 				Download.download(dto.getUrl(), dto.getFileName());
 				// 下载完毕，设置为1，成功
@@ -89,7 +90,7 @@ public class Download {
 				}
 			}
 		});
-		System.out.println("文件下载完毕!");
+		System.out.println(DateUtils.date() + " 文件下载完毕!");
 		mergeFiles(tfile.listFiles(), Config.value("downloadDir") + fileName + ".ts");
 	}
 
