@@ -7,12 +7,14 @@ import static com.mongodb.client.model.Updates.set;
 import static org.bson.codecs.configuration.CodecRegistries.fromProviders;
 import static org.bson.codecs.configuration.CodecRegistries.fromRegistries;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 import org.bson.codecs.configuration.CodecRegistry;
 import org.bson.codecs.pojo.PojoCodecProvider;
 
+import com.mongodb.Block;
 import com.mongodb.MongoClientSettings;
 import com.mongodb.MongoCredential;
 import com.mongodb.ServerAddress;
@@ -24,7 +26,7 @@ import com.mongodb.client.model.Sorts;
 import com.sendtommon.gethxc.config.Config;
 import com.sendtommon.gethxc.dto.GetListByTagRespDataDTO;
 
-public class MongoUtils {
+public class MongoDAO {
 	private static MongoDatabase database = null;
 	private static CodecRegistry pojoCodecRegistry = null;
 	private static MongoCollection<GetListByTagRespDataDTO> collection = null;
@@ -57,9 +59,6 @@ public class MongoUtils {
 	 * @param list
 	 */
 	public static void insertOne(GetListByTagRespDataDTO list) {
-		MongoCollection<GetListByTagRespDataDTO> collection = database.getCollection("video_list",
-				GetListByTagRespDataDTO.class);
-		collection = collection.withCodecRegistry(pojoCodecRegistry);
 		collection.insertOne(list);
 	}
 
@@ -74,39 +73,73 @@ public class MongoUtils {
 		return collection.find(eq("iD", id)).first();
 	}
 
-	public static GetListByTagRespDataDTO firstName() {
-		MongoCollection<GetListByTagRespDataDTO> collection = database.getCollection("video_list",
-				GetListByTagRespDataDTO.class);
-		collection = collection.withCodecRegistry(pojoCodecRegistry);
-		return collection.find(and(eq("fail", 0), eq("downloaded", 0))).sort(Sorts.descending("seeCount")).first();
+	public static List<GetListByTagRespDataDTO> firstName() {
+		List<GetListByTagRespDataDTO> list = new ArrayList<GetListByTagRespDataDTO>();
+		Block<GetListByTagRespDataDTO> printBlock = new Block<GetListByTagRespDataDTO>() {
+			@Override
+			public void apply(GetListByTagRespDataDTO t) {
+				list.add(t);
+			}
+		};
+		collection.find(and(eq("downloaded", 0))).sort(Sorts.descending("seeCount")).forEach(printBlock);
+		return list;
 	}
 
 	public static void updateDownRes(Object id) {
-		MongoCollection<GetListByTagRespDataDTO> collection = database.getCollection("video_list",
-				GetListByTagRespDataDTO.class);
-		collection = collection.withCodecRegistry(pojoCodecRegistry);
 		collection.updateOne(eq("iD", id), combine(set("downloaded", 1)));
 	}
 
 	public static void updateFail(Object id) {
-		MongoCollection<GetListByTagRespDataDTO> collection = database.getCollection("video_list",
-				GetListByTagRespDataDTO.class);
-		collection = collection.withCodecRegistry(pojoCodecRegistry);
 		collection.updateOne(eq("iD", id), combine(set("fail", 1)));
 	}
 
 	public static void updateMany() {
-		MongoCollection<GetListByTagRespDataDTO> collection = database.getCollection("video_list",
-				GetListByTagRespDataDTO.class);
-		collection = collection.withCodecRegistry(pojoCodecRegistry);
 		collection.updateMany(eq("downloaded", 0), combine(set("fail", 0)));
 	}
 
-	public static void updateSeeCount(Object id, Integer seeCount) {
-		MongoCollection<GetListByTagRespDataDTO> collection = database.getCollection("video_list",
-				GetListByTagRespDataDTO.class);
-		collection = collection.withCodecRegistry(pojoCodecRegistry);
-		collection.updateOne(eq("iD", id), combine(set("seeCount", seeCount)));
+	/**
+	 * 修改观看次数和下载地址
+	 * 
+	 * @param id
+	 * @param seeCount
+	 * @param url
+	 */
+	public static void updateSeeCount(Object id, Integer seeCount, String url) {
+		collection.updateOne(eq("iD", id), combine(set("seeCount", seeCount), set("url", url)));
+	}
+
+	/**
+	 * 修改文件名的seq
+	 * 
+	 * @param id
+	 * @param seeCount
+	 * @param url
+	 */
+	public static void updateFilename(Object id, String filename, Integer seq) {
+		collection.updateOne(eq("iD", id), combine(set("fileName", filename), set("seq", seq)));
+	}
+
+	/**
+	 * 通过seeCount排序获取列表
+	 * 
+	 * @return
+	 */
+	public static List<GetListByTagRespDataDTO> getOrderBySeeCount() {
+		List<GetListByTagRespDataDTO> list = new ArrayList<GetListByTagRespDataDTO>();
+		Block<GetListByTagRespDataDTO> printBlock = new Block<GetListByTagRespDataDTO>() {
+			@Override
+			public void apply(GetListByTagRespDataDTO t) {
+				list.add(t);
+			}
+		};
+		collection.find().sort(Sorts.descending("seeCount")).forEach(printBlock);
+		return list;
+	}
+
+	public static Integer nextvalue() {
+		int i = collection.find().sort(Sorts.descending("seq")).first().getSeq();
+		i++;
+		return i;
 	}
 
 }

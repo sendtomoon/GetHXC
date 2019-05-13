@@ -12,42 +12,37 @@ import java.net.InetSocketAddress;
 import java.net.Proxy;
 import java.net.URL;
 import java.nio.channels.FileChannel;
+import java.util.List;
 
 import com.sendtommon.gethxc.config.Config;
 import com.sendtommon.gethxc.dto.GetListByTagRespDataDTO;
 import com.sendtommon.gethxc.dto.M3U8DTO;
-import com.sendtommon.gethxc.mongo.MongoUtils;
+import com.sendtommon.gethxc.mongo.MongoDAO;
 
 public class Download {
-	public static int connTimeout = 30 * 60 * 1000;
-	public static int readTimeout = 30 * 60 * 1000;
+	public static int connTimeout = 60 * 1000;
+	public static int readTimeout = 60 * 1000;
 
 	public static void main(String[] args) {
-//		MongoUtils.updateMany();
-		int i = 148;
-		while (true) {
-			GetListByTagRespDataDTO dto = MongoUtils.firstName();
-			if (null == dto) {
-				break;
-			}
-			deleteDir(new File(Config.value("tempDir")));
-			System.err.println("当前下载第" + i + "个。数量：" + dto.getSeeCount());
+		List<GetListByTagRespDataDTO> list = MongoDAO.firstName();
+		for (int i = 0; i < list.size(); i++) {
+			GetListByTagRespDataDTO dto = list.get(i);
+			System.err.println("当前下载第" + dto.getSeq() + "个。数量：" + dto.getSeeCount());
 			try {
-				dto.setFileName(getName(i, dto.getName()));
 				Download.download(dto.getUrl(), dto.getFileName());
-				MongoUtils.updateDownRes(dto.getID());
+				// 下载完毕，设置为1，成功
+				MongoDAO.updateDownRes(dto.getID());
 			} catch (Exception e) {
 				e.printStackTrace();
-				MongoUtils.updateFail(dto.getID());
+				MongoDAO.updateFail(dto.getID());
 				continue;
-			} finally {
-				i++;
 			}
 		}
 
 	}
 
 	private static void download(String m3u8url, String fileName) throws Exception {
+		deleteDir(new File(Config.value("tempDir")));
 		File tfile = new File(Config.value("tempDir"));
 		if (!tfile.exists()) {
 			tfile.mkdirs();
@@ -178,14 +173,6 @@ public class Download {
 		}
 
 		return true;
-	}
-
-	private static String getName(int i, String filename) {
-		String no = String.valueOf(i);
-		while (no.length() < 5) {
-			no = "0" + no;
-		}
-		return no + "_" + filename.trim().replace(" ", "_");
 	}
 
 	private static boolean deleteDir(File dir) {

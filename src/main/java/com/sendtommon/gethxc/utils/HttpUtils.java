@@ -1,4 +1,4 @@
-package com.sendtommon.gethxc;
+package com.sendtommon.gethxc.utils;
 
 import java.io.BufferedReader;
 import java.io.IOException;

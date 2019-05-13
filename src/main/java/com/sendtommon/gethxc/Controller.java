@@ -10,8 +10,9 @@ import com.sendtommon.gethxc.dto.GetListByTagReqDTO;
 import com.sendtommon.gethxc.dto.GetListByTagRespDTO;
 import com.sendtommon.gethxc.dto.GetListByTagRespDataDTO;
 import com.sendtommon.gethxc.dto.OrdertextDTO;
-import com.sendtommon.gethxc.mongo.MongoUtils;
+import com.sendtommon.gethxc.mongo.MongoDAO;
 import com.sendtommon.gethxc.utils.HeaderUtils;
+import com.sendtommon.gethxc.utils.HttpUtils;
 
 /**
  * @author lbt42
@@ -36,10 +37,11 @@ public class Controller {
 	private void insert(List<GetListByTagRespDataDTO> list) {
 		System.err.println("总记录数" + list.size());
 		for (GetListByTagRespDataDTO dataDTO : list) {
-			GetListByTagRespDataDTO result = MongoUtils.isExistOfId(dataDTO.getID());// 通过id获取对象，判断对象是否已经存在
+			GetListByTagRespDataDTO result = MongoDAO.isExistOfId(dataDTO.getID());// 通过id获取对象，判断对象是否已经存在
 			// 如果记录不存在，则新增一条，如果记录已经存在，则更新阅读数
 			if (null == result) {
-				MongoUtils.insertOne(dataDTO);
+				dataDTO.setSeq(MongoDAO.nextvalue());
+				MongoDAO.insertOne(dataDTO);
 				System.err.println("插入一条成功");
 			} else {
 				this.updateSeeCount(dataDTO);
@@ -58,7 +60,8 @@ public class Controller {
 		GetListByTagReqDTO glbt = new GetListByTagReqDTO(1, 99999, null, 0, new OrdertextDTO("AddTime", "desc"));
 		String str = null;
 		try {
-			str = HttpUtils.post(Config.value("getListByTag"), JSON.toJSONString(glbt), "127.0.0.1:1080", HeaderUtils.getHeader());
+			str = HttpUtils.post(Config.value("getListByTag"), JSON.toJSONString(glbt), "127.0.0.1:1080",
+					HeaderUtils.getHeader());
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -72,7 +75,7 @@ public class Controller {
 	 * @param dataDTO
 	 */
 	private void updateSeeCount(GetListByTagRespDataDTO dataDTO) {
-		MongoUtils.updateSeeCount(dataDTO.getID(), dataDTO.getSeeCount());
+		MongoDAO.updateSeeCount(dataDTO.getID(), dataDTO.getSeeCount(), dataDTO.getUrl());
 	}
 
 }

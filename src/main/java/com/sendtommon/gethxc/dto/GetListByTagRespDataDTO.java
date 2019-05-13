@@ -2,9 +2,15 @@ package com.sendtommon.gethxc.dto;
 
 import java.util.Date;
 
-import org.bson.types.ObjectId;
-
 public class GetListByTagRespDataDTO extends BaseDTO {
+
+	public Integer getSeq() {
+		return seq;
+	}
+
+	public void setSeq(Integer seq) {
+		this.seq = seq;
+	}
 
 	private static final long serialVersionUID = 6538968052211907858L;
 	private Date AddTime;
@@ -28,6 +34,7 @@ public class GetListByTagRespDataDTO extends BaseDTO {
 	/** 是否已下载过 0否 1是 */
 	private Integer downloaded = 0;
 	private String fileName;
+	private Integer seq;
 
 	public String getFileName() {
 		return fileName;
