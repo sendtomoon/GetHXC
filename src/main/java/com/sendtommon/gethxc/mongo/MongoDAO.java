@@ -54,7 +54,7 @@ public class MongoDAO {
 	}
 
 	/**
-	 * ����һ������
+	 * 插入一条数据
 	 * 
 	 * @param list
 	 */
@@ -63,7 +63,7 @@ public class MongoDAO {
 	}
 
 	/**
-	 * ͨ��iD��ȡ����
+	 * 通锟斤拷iD锟斤拷取锟斤拷锟斤拷
 	 * 
 	 * @param filed
 	 * @param value
@@ -99,7 +99,7 @@ public class MongoDAO {
 	}
 
 	/**
-	 * �޸Ĺۿ����������ص�ַ
+	 * 锟睫改观匡拷锟斤拷锟斤拷锟斤拷锟斤拷锟截碉拷址
 	 * 
 	 * @param id
 	 * @param seeCount
@@ -110,7 +110,7 @@ public class MongoDAO {
 	}
 
 	/**
-	 * �޸��ļ�����seq
+	 * 锟睫革拷锟侥硷拷锟斤拷锟斤拷seq
 	 * 
 	 * @param id
 	 * @param seeCount
@@ -121,7 +121,7 @@ public class MongoDAO {
 	}
 
 	/**
-	 * ͨ��seeCount�����ȡ�б�
+	 * 通锟斤拷seeCount锟斤拷锟斤拷锟饺★拷斜锟�
 	 * 
 	 * @return
 	 */
@@ -139,7 +139,7 @@ public class MongoDAO {
 	}
 
 	/**
-	 * ��ȡ��Ƶ��һ�����
+	 * 锟斤拷取锟斤拷频锟斤拷一锟斤拷锟斤拷锟�
 	 * 
 	 * @return
 	 */

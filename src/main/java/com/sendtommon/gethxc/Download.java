@@ -1,16 +1,8 @@
 package com.sendtommon.gethxc;
 
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.InetSocketAddress;
-import java.net.Proxy;
-import java.net.URL;
 import java.nio.channels.FileChannel;
 import java.util.List;
 
@@ -19,6 +11,7 @@ import com.sendtommon.gethxc.dto.GetListByTagRespDataDTO;
 import com.sendtommon.gethxc.dto.M3U8DTO;
 import com.sendtommon.gethxc.mongo.MongoDAO;
 import com.sendtommon.gethxc.utils.DateUtils;
+import com.sendtommon.gethxc.utils.HttpUtils;
 
 public class Download {
 	public static int connTimeout = 60 * 1000;
@@ -28,11 +21,10 @@ public class Download {
 		List<GetListByTagRespDataDTO> list = MongoDAO.firstName();
 		for (int i = 0; i < list.size(); i++) {
 			GetListByTagRespDataDTO dto = list.get(i);
-			System.err.println(DateUtils.date() + " µ±«∞œ¬‘ÿµ⁄" + dto.getSeq() + "∏ˆ°£ ˝¡ø£∫" + dto.getSeeCount());
+			System.err.println(DateUtils.date() + " ÂºÄÂßã‰∏ãËΩΩÁ¨¨Ôºö" + dto.getSeq() + "„ÄÇÊï∞ÈáèÔºö" + dto.getSeeCount());
 			try {
 				Download.download(dto.getUrl(), dto.getFileName());
-				// œ¬‘ÿÕÍ±œ£¨…Ë÷√Œ™1£¨≥…π¶
-				MongoDAO.updateDownRes(dto.getID());
+				MongoDAO.updateDownRes(dto.getID());// ‰∏ãËΩΩÊàêÂäüÔºåÂàô‰øÆÊîπÁä∂ÊÄÅ‰∏∫Â∑≤‰∏ãËΩΩ
 			} catch (Exception e) {
 				e.printStackTrace();
 				MongoDAO.updateFail(dto.getID());
@@ -50,91 +42,27 @@ public class Download {
 		}
 		M3U8DTO m3u8ByURL = getM3U8ByURL(m3u8url);
 		if (null == m3u8ByURL) {
-			throw new Exception("◊ ‘¥≤ª¥Ê‘⁄" + "   " + fileName);
+			throw new Exception("M3U8Ëé∑ÂèñÂ§±Ë¥•" + "   " + fileName);
 		}
 		String basePath = m3u8ByURL.getBasepath();
 		m3u8ByURL.getTsList().stream().parallel().forEach(m3U8Ts -> {
 			File file = new File(Config.value("tempDir") + File.separator + m3U8Ts.getFile());
-			if (!file.exists()) {// œ¬‘ÿπ˝µƒæÕ≤ªπ‹¡À
-				FileOutputStream fos = null;
-				InputStream inputStream = null;
+			if (!file.exists()) {
 				try {
-					URL url = new URL(basePath + m3U8Ts.getFile());
-					Proxy proxy = new Proxy(Proxy.Type.HTTP, new InetSocketAddress(Config.value("proxyAddress"),
-							Integer.valueOf(Config.value("proxyPort"))));
-					HttpURLConnection conn = (HttpURLConnection) url.openConnection(proxy);
-					conn.setConnectTimeout(connTimeout);
-					conn.setReadTimeout(readTimeout);
-					if (conn.getResponseCode() == 200) {
-						inputStream = conn.getInputStream();
-						fos = new FileOutputStream(file);// ª·◊‘∂Ø¥¥Ω®Œƒº˛
-						int len = 0;
-						byte[] buf = new byte[1024];
-						while ((len = inputStream.read(buf)) != -1) {
-							fos.write(buf, 0, len);// –¥»Î¡˜÷–
-						}
-					}
+					HttpUtils.download(basePath + m3U8Ts.getFile(), "127.0.0.1:1080", file);
 				} catch (Exception e) {
 					e.printStackTrace();
-				} finally {// πÿ¡˜
-					try {
-						if (inputStream != null) {
-							inputStream.close();
-						}
-						if (fos != null) {
-							fos.close();
-						}
-					} catch (IOException e) {
-						e.printStackTrace();
-					}
 				}
 			}
 		});
-		System.out.println(DateUtils.date() + " Œƒº˛œ¬‘ÿÕÍ±œ!");
+		System.out.println(DateUtils.date() + "‰∏ãËΩΩÊàêÂäüÔºÅ");
 		mergeFiles(tfile.listFiles(), Config.value("downloadDir") + fileName + ".ts");
 	}
 
 	public static M3U8DTO getM3U8ByURL(String m3u8URL) {
 		try {
-			Proxy proxy = new Proxy(Proxy.Type.HTTP,
-					new InetSocketAddress(Config.value("proxyAddress"), Integer.valueOf(Config.value("proxyPort"))));
-			HttpURLConnection conn = (HttpURLConnection) new URL(m3u8URL).openConnection(proxy);
-			if (conn.getResponseCode() == 200) {
-				String realUrl = conn.getURL().toString();
-				BufferedReader reader = new BufferedReader(new InputStreamReader(conn.getInputStream()));
-				String basepath = realUrl.substring(0, realUrl.lastIndexOf("/") + 1);
-				M3U8DTO ret = new M3U8DTO();
-				ret.setBasepath(basepath);
-
-				String line;
-				float seconds = 0;
-				int mIndex;
-				while ((line = reader.readLine()) != null) {
-					if (line.startsWith("#")) {
-						if (line.startsWith("#EXTINF:")) {
-							line = line.substring(8);
-							if ((mIndex = line.indexOf(",")) != -1) {
-								line = line.substring(0, mIndex + 1);
-							}
-							try {
-								seconds = Float.parseFloat(line);
-							} catch (Exception e) {
-								seconds = 0;
-							}
-						}
-						continue;
-					}
-					if (line.endsWith("m3u8")) {
-						return getM3U8ByURL(basepath + line);
-					}
-					ret.addTs(new M3U8DTO.Ts(line, seconds));
-					seconds = 0;
-				}
-				reader.close();
-
-				return ret;
-			}
-		} catch (IOException e) {
+			return HttpUtils.getM3u8(m3u8URL);
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		return null;
@@ -186,7 +114,6 @@ public class Download {
 				}
 			}
 		}
-		// ƒø¬º¥À ±Œ™ø’£¨ø…“‘…æ≥˝
 		return dir.delete();
 	}
 
