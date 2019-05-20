@@ -5,16 +5,14 @@ import java.util.Collections;
 import java.util.List;
 
 public class M3U8DTO extends BaseDTO {
-	/**
-	 * 
-	 */
+
 	private static final long serialVersionUID = -2040713370081106737L;
 	private String basepath;
 	private List<Ts> tsList = new ArrayList<Ts>();
-	private long startTime;// 开始时间
-	private long endTime;// 结束时间
-	private long startDownloadTime;// 开始下载时间
-	private long endDownloadTime;// 结束下载时间
+	private long startTime;
+	private long endTime;
+	private long startDownloadTime;
+	private long endDownloadTime;
 
 	public String getBasepath() {
 		return basepath;
@@ -52,11 +50,6 @@ public class M3U8DTO extends BaseDTO {
 		this.endDownloadTime = endDownloadTime;
 	}
 
-	/**
-	 * 获取开始时间
-	 *
-	 * @return
-	 */
 	public long getStartTime() {
 		if (tsList.size() > 0) {
 			Collections.sort(tsList);
@@ -66,11 +59,6 @@ public class M3U8DTO extends BaseDTO {
 		return 0;
 	}
 
-	/**
-	 * 获取结束时间(加上了最后一段时间的持续时间)
-	 *
-	 * @return
-	 */
 	public long getEndTime() {
 		if (tsList.size() > 0) {
 			Ts m3U8Ts = tsList.get(tsList.size() - 1);
@@ -124,9 +112,6 @@ public class M3U8DTO extends BaseDTO {
 			return file + " (" + seconds + "sec)";
 		}
 
-		/**
-		 * 获取时间
-		 */
 		public long getLongDate() {
 			try {
 				return Long.parseLong(file.substring(0, file.lastIndexOf(".")));

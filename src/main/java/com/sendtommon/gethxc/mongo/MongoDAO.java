@@ -62,13 +62,6 @@ public class MongoDAO {
 		collection.insertOne(list);
 	}
 
-	/**
-	 * 通锟斤拷iD锟斤拷取锟斤拷锟斤拷
-	 * 
-	 * @param filed
-	 * @param value
-	 * @return
-	 */
 	public static GetListByTagRespDataDTO isExistOfId(Integer id) {
 		return collection.find(eq("iD", id)).first();
 	}
@@ -86,16 +79,12 @@ public class MongoDAO {
 		return list;
 	}
 
-	public static void updateDownRes(Object id) {
-		collection.updateOne(eq("iD", id), combine(set("downloaded", 1)));
+	public static void updateDownRes(Object id, Integer i) {
+		collection.updateOne(eq("iD", id), combine(set("downloaded", i)));
 	}
 
-	public static void updateFail(Object id) {
-		collection.updateOne(eq("iD", id), combine(set("fail", 1)));
-	}
-
-	public static void updateMany() {
-		collection.updateMany(eq("downloaded", 0), combine(set("fail", 0)));
+	public static void updateFail(Object id, Integer i) {
+		collection.updateOne(eq("iD", id), combine(set("fail", i)));
 	}
 
 	/**
@@ -138,11 +127,6 @@ public class MongoDAO {
 		return list;
 	}
 
-	/**
-	 * 锟斤拷取锟斤拷频锟斤拷一锟斤拷锟斤拷锟�
-	 * 
-	 * @return
-	 */
 	public static Integer nextvalue() {
 		int i = collection.find().sort(Sorts.descending("seq")).first().getSeq();
 		i++;

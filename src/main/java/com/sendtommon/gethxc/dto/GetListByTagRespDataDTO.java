@@ -31,7 +31,9 @@ public class GetListByTagRespDataDTO extends BaseDTO {
 	private Integer TypeID;
 	private String TypeName;
 	private String Url;
-	/** ÊÇ·ñÒÑÏÂÔØ¹ı 0·ñ 1ÊÇ */
+	/**
+	 * 0:æœªä¸‹è½½ 1ï¼šå·²ä¸‹è½½ 2ï¼šä¸å†ä¸‹è½½
+	 */
 	private Integer downloaded = 0;
 	private String fileName;
 	private Integer seq;
