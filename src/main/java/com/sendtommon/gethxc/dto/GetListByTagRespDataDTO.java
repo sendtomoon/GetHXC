@@ -2,6 +2,9 @@ package com.sendtommon.gethxc.dto;
 
 import java.util.Date;
 
+import org.apache.ibatis.type.Alias;
+
+@Alias(value = "detailDTO")
 public class GetListByTagRespDataDTO extends BaseDTO {
 
 	public Integer getSeq() {
