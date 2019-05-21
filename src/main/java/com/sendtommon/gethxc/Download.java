@@ -19,21 +19,22 @@ public class Download {
 	public static int readTimeout = 60 * 1000;
 
 	public static void main(String[] args) {
-		List<GetListByTagRespDataDTO> list = MongoDAO.firstName();
+//		List<GetListByTagRespDataDTO> list = MongoDAO.firstName();
+		List<GetListByTagRespDataDTO> list = MongoToOracle.getWaitDown();
 		for (int i = 0; i < list.size(); i++) {
 			GetListByTagRespDataDTO dto = list.get(i);
 			System.err.println(DateUtils.date() + " 开始下载第：" + dto.getSeq() + "。数量：" + dto.getSeeCount());
 			try {
 				Download.download(dto.getUrl(), dto.getFileName());
-				MongoDAO.updateDownRes(dto.getID(),1);// 下载成功，则修改状态为已下载
+				MongoDAO.updateDownRes(dto.getID(), 1);// 下载成功，则修改状态为已下载
 			} catch (M3U8NotFundException e) {
 				e.printStackTrace();
-				MongoDAO.updateDownRes(dto.getID(),2);// 找不到M3U8
-				MongoDAO.updateFail(dto.getID(),1);
+				MongoDAO.updateDownRes(dto.getID(), 2);// 找不到M3U8
+				MongoDAO.updateFail(dto.getID(), 1);
 				continue;
 			} catch (Exception e) {
 				e.printStackTrace();
-				MongoDAO.updateFail(dto.getID(),1);
+				MongoDAO.updateFail(dto.getID(), 1);
 				continue;
 			}
 		}

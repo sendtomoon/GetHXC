@@ -79,6 +79,19 @@ public class MongoDAO {
 		return list;
 	}
 
+	public static List<GetListByTagRespDataDTO> getAll() {
+		List<GetListByTagRespDataDTO> list = new ArrayList<GetListByTagRespDataDTO>();
+		Consumer<GetListByTagRespDataDTO> sdfs = new Consumer<GetListByTagRespDataDTO>() {
+			@Override
+			public void accept(GetListByTagRespDataDTO t) {
+				list.add(t);
+			}
+
+		};
+		collection.find().forEach(sdfs);
+		return list;
+	}
+
 	public static void updateDownRes(Object id, Integer i) {
 		collection.updateOne(eq("iD", id), combine(set("downloaded", i)));
 	}

@@ -7,14 +7,6 @@ import org.apache.ibatis.type.Alias;
 @Alias(value = "detailDTO")
 public class GetListByTagRespDataDTO extends BaseDTO {
 
-	public Integer getSeq() {
-		return seq;
-	}
-
-	public void setSeq(Integer seq) {
-		this.seq = seq;
-	}
-
 	private static final long serialVersionUID = 6538968052211907858L;
 	private Date AddTime;
 	private Integer CollectionCount;
@@ -40,6 +32,14 @@ public class GetListByTagRespDataDTO extends BaseDTO {
 	private Integer downloaded = 0;
 	private String fileName;
 	private Integer seq;
+
+	public Integer getSeq() {
+		return seq;
+	}
+
+	public void setSeq(Integer seq) {
+		this.seq = seq;
+	}
 
 	public String getFileName() {
 		return fileName;
