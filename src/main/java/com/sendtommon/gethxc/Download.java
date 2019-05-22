@@ -33,6 +33,8 @@ public class Download {
 				continue;
 			} catch (Exception e) {
 				e.printStackTrace();
+				dto.setDownloaded(1);
+				MongoToOracle.update(dto);
 				continue;
 			}
 		}
@@ -40,11 +42,8 @@ public class Download {
 	}
 
 	private static void download(String m3u8url, String fileName) throws Exception {
-		deleteDir(new File(Config.value("tempDir")));
 		File tfile = new File(Config.value("tempDir"));
-		if (!tfile.exists()) {
-			tfile.mkdirs();
-		}
+		deleteDir(tfile);
 		M3U8DTO M3U8 = getM3U8ByURL(m3u8url);
 		if (null == M3U8) {
 			throw new M3U8NotFundException("M3U8获取失败" + "   " + fileName);
@@ -125,6 +124,10 @@ public class Download {
 	}
 
 	private static boolean deleteDir(File dir) {
+		if (!dir.exists()) {
+			dir.mkdirs();
+			return true;
+		}
 		if (dir.isDirectory()) {
 			String[] children = dir.list();
 			for (int i = 0; i < children.length; i++) {
