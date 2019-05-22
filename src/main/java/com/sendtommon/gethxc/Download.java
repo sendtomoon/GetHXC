@@ -10,7 +10,6 @@ import java.util.List;
 import com.sendtommon.gethxc.config.Config;
 import com.sendtommon.gethxc.dto.GetListByTagRespDataDTO;
 import com.sendtommon.gethxc.dto.M3U8DTO;
-import com.sendtommon.gethxc.mongo.MongoDAO;
 import com.sendtommon.gethxc.utils.DateUtils;
 import com.sendtommon.gethxc.utils.HttpUtils;
 
@@ -19,22 +18,21 @@ public class Download {
 	public static int readTimeout = 60 * 1000;
 
 	public static void main(String[] args) {
-//		List<GetListByTagRespDataDTO> list = MongoDAO.firstName();
 		List<GetListByTagRespDataDTO> list = MongoToOracle.getWaitDown();
 		for (int i = 0; i < list.size(); i++) {
 			GetListByTagRespDataDTO dto = list.get(i);
 			System.err.println(DateUtils.date() + " 开始下载第：" + dto.getSeq() + "。数量：" + dto.getSeeCount());
 			try {
 				Download.download(dto.getUrl(), dto.getFileName());
-				MongoDAO.updateDownRes(dto.getID(), 1);// 下载成功，则修改状态为已下载
+				dto.setDownloaded(1);
+				MongoToOracle.update(dto);
 			} catch (M3U8NotFundException e) {
 				e.printStackTrace();
-				MongoDAO.updateDownRes(dto.getID(), 2);// 找不到M3U8
-				MongoDAO.updateFail(dto.getID(), 1);
+				dto.setDownloaded(2);
+				MongoToOracle.update(dto);
 				continue;
 			} catch (Exception e) {
 				e.printStackTrace();
-				MongoDAO.updateFail(dto.getID(), 1);
 				continue;
 			}
 		}

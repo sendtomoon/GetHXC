@@ -6,5 +6,8 @@ import com.sendtommon.gethxc.dto.GetListByTagRespDataDTO;
 
 public interface DAO {
 	void add(GetListByTagRespDataDTO dto);
+
 	List<GetListByTagRespDataDTO> getWaitDown();
+
+	int update(GetListByTagRespDataDTO dto);
 }

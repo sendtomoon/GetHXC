@@ -65,5 +65,12 @@
 	select * from hxc_video where downloaded = '0' 
 	and (tags like '%'||'精选系列'||'%' or tags like '%'||'国产'||'%' or tags like '%'||'网红'||'%' or tags like '%'||'主播'||'%')
 	</select>
+	
+	<update id="update" parameterType="detailDTO">
+	update hxc_video set 
+	downloaded = #{downloaded}
+	where
+	id = #{ID}
+	</update>
 
 </mapper>

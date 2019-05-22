@@ -37,6 +37,10 @@ public class MongoToOracle {
 		return dao.getWaitDown();
 	}
 
+	public static int update(GetListByTagRespDataDTO dto) {
+		return dao.update(dto);
+	}
+
 	public void move() {
 		List<GetListByTagRespDataDTO> list = MongoDAO.getAll();
 		for (GetListByTagRespDataDTO dto : list) {
