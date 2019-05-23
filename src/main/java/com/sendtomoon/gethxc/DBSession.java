@@ -1,20 +1,16 @@
-package com.sendtommon.gethxc;
+package com.sendtomoon.gethxc;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.List;
 
 import org.apache.ibatis.io.Resources;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.apache.ibatis.session.SqlSessionFactoryBuilder;
 
-import com.sendtommon.gethxc.dto.GetListByTagRespDataDTO;
-import com.sendtommon.gethxc.mongo.MongoDAO;
-
 public class DBSession {
 
-	private static ThreadLocal<SqlSession> threadLocal = new ThreadLocal<>();
+	private static ThreadLocal<SqlSession> threadLocal = new ThreadLocal<SqlSession>();
 	private static SqlSessionFactory factory = null;
 
 	static {
@@ -29,24 +25,24 @@ public class DBSession {
 	}
 
 	/**
-	 * 获取SqlSession
+	 * 鑾峰彇SqlSession
 	 * 
 	 * @return
 	 */
 	public static SqlSession getSqlSession() {
-		SqlSession sqlSession = threadLocal.get(); // 从当前线程获取
+		SqlSession sqlSession = threadLocal.get(); // 浠庡綋鍓嶇嚎绋嬭幏鍙�
 		if (sqlSession == null) {
 			sqlSession = factory.openSession(true);
-			threadLocal.set(sqlSession); // 将sqlSession与当前线程绑定
+			threadLocal.set(sqlSession); // 灏唖qlSession涓庡綋鍓嶇嚎绋嬬粦瀹�
 		}
 		return sqlSession;
 	}
 
 	/**
-	 * 关闭SqlSession
+	 * 鍏抽棴SqlSession
 	 */
 	public static void close() {
-		SqlSession sqlSession = threadLocal.get(); // 从当前线程获取
+		SqlSession sqlSession = threadLocal.get(); // 浠庡綋鍓嶇嚎绋嬭幏鍙�
 		if (sqlSession != null) {
 			sqlSession.close();
 			threadLocal.remove();

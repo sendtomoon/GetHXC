@@ -1,4 +1,4 @@
-package com.sendtommon.gethxc.utils;
+package com.sendtomoon.gethxc.utils;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -19,7 +19,7 @@ import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 
-import com.sendtommon.gethxc.dto.M3U8DTO;
+import com.sendtomoon.gethxc.dto.M3U8DTO;
 
 public class HttpUtils {
 	public static String post(String url, String request, String proxyUrl, Map<String, String> header)

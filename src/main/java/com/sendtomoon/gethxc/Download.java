@@ -1,4 +1,4 @@
-package com.sendtommon.gethxc;
+package com.sendtomoon.gethxc;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -7,38 +7,47 @@ import java.math.BigDecimal;
 import java.nio.channels.FileChannel;
 import java.util.List;
 
-import com.sendtommon.gethxc.config.Config;
-import com.sendtommon.gethxc.dto.GetListByTagRespDataDTO;
-import com.sendtommon.gethxc.dto.M3U8DTO;
-import com.sendtommon.gethxc.utils.DateUtils;
-import com.sendtommon.gethxc.utils.HttpUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+
+import com.sendtomoon.gethxc.config.Config;
+import com.sendtomoon.gethxc.dto.GetListByTagRespDataDTO;
+import com.sendtomoon.gethxc.dto.M3U8DTO;
+import com.sendtomoon.gethxc.utils.DateUtils;
+import com.sendtomoon.gethxc.utils.HttpUtils;
 
 public class Download {
 	public static int connTimeout = 60 * 1000;
 	public static int readTimeout = 60 * 1000;
 
+	@Autowired
+	HXCDAO dao;
+
 	public static void main(String[] args) {
-		List<GetListByTagRespDataDTO> list = MongoToOracle.getWaitDown();
+		Download md = new Download();
+		md.mainDown();
+	}
+
+	public void mainDown() {
+		List<GetListByTagRespDataDTO> list = dao.getWaitDown();
 		for (int i = 0; i < list.size(); i++) {
 			GetListByTagRespDataDTO dto = list.get(i);
 			System.err.println(DateUtils.date() + " 开始下载第：" + dto.getSeq() + "。数量：" + dto.getSeeCount());
 			try {
 				Download.download(dto.getUrl(), dto.getFileName());
 				dto.setDownloaded(1);
-				MongoToOracle.update(dto);
+				dao.update(dto);
 			} catch (M3U8NotFundException e) {
 				e.printStackTrace();
 				dto.setDownloaded(2);
-				MongoToOracle.update(dto);
+				dao.update(dto);
 				continue;
 			} catch (Exception e) {
 				e.printStackTrace();
 				dto.setDownloaded(1);
-				MongoToOracle.update(dto);
+				dao.update(dto);
 				continue;
 			}
 		}
-
 	}
 
 	private static void download(String m3u8url, String fileName) throws Exception {

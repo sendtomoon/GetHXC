@@ -1,4 +1,4 @@
-package com.sendtommon.gethxc.config;
+package com.sendtomoon.gethxc.config;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -29,7 +29,7 @@ public class Config {
 	}
 
 	/**
-	 * 获取value
+	 * 锟斤拷取value
 	 * 
 	 * @param key
 	 * @return
@@ -42,7 +42,7 @@ public class Config {
 	}
 
 	/**
-	 * 从配置文件读取头信息
+	 * 锟斤拷锟斤拷锟斤拷锟侥硷拷锟斤拷取头锟斤拷息
 	 * 
 	 * @return
 	 */

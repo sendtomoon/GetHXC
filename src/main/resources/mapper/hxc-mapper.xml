@@ -2,7 +2,7 @@
 <!DOCTYPE mapper
   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper >
+<mapper namespace="com.sendtomoon.gethxc.HXCDAO">
 
 <!-- 字段 -->
 	<sql id="Field">
@@ -52,8 +52,12 @@
 		#{fileName},
 		#{seq}
 	</sql>
+	
+	<select id="test" resultType="String">
+	select current_timestamp() from dual
+	</select>
 
-	<insert id="hxc.video.add" parameterType="detailDTO">
+	<insert id="add" parameterType="detailDTO">
 		insert into
 			hxc_video
 		(<include refid="Field" />)
@@ -61,12 +65,12 @@
 		(<include refid="FieldValue" />)
 	</insert>
 	
-	<select id="hxc.video.getWaitDown" resultType="detailDTO">
+	<select id="getWaitDown" resultType="detailDTO">
 	select * from hxc_video where downloaded = '0' 
 	and (tags like '%'||'精选系列'||'%' or tags like '%'||'国产'||'%' or tags like '%'||'网红'||'%' or tags like '%'||'主播'||'%')
 	</select>
 	
-	<update id="hxc.video.update" parameterType="detailDTO">
+	<update id="update" parameterType="detailDTO">
 	update hxc_video set 
 	downloaded = #{downloaded}
 	where

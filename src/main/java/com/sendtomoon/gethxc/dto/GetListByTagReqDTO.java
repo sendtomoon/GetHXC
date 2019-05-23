@@ -1,4 +1,4 @@
-package com.sendtommon.gethxc.dto;
+package com.sendtomoon.gethxc.dto;
 
 public class GetListByTagReqDTO extends BaseDTO {
 

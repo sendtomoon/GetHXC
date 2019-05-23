@@ -1,15 +1,15 @@
-package com.sendtommon.gethxc.utils;
+package com.sendtomoon.gethxc.utils;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Map.Entry;
 
-import com.sendtommon.gethxc.config.Config;
+import com.sendtomoon.gethxc.config.Config;
 
 public class HeaderUtils {
 	/**
-	 * post请求头信息
+	 * post锟斤拷锟斤拷头锟斤拷息
 	 * 
 	 * @return
 	 */

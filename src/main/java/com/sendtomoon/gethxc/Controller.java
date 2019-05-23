@@ -1,55 +1,55 @@
-package com.sendtommon.gethxc;
+package com.sendtomoon.gethxc;
 
 import java.util.List;
 
 import org.apache.commons.collections4.CollectionUtils;
 
 import com.alibaba.fastjson.JSON;
-import com.sendtommon.gethxc.config.Config;
-import com.sendtommon.gethxc.dto.GetListByTagReqDTO;
-import com.sendtommon.gethxc.dto.GetListByTagRespDTO;
-import com.sendtommon.gethxc.dto.GetListByTagRespDataDTO;
-import com.sendtommon.gethxc.dto.OrdertextDTO;
-import com.sendtommon.gethxc.mongo.MongoDAO;
-import com.sendtommon.gethxc.utils.HeaderUtils;
-import com.sendtommon.gethxc.utils.HttpUtils;
+import com.sendtomoon.gethxc.config.Config;
+import com.sendtomoon.gethxc.dto.GetListByTagReqDTO;
+import com.sendtomoon.gethxc.dto.GetListByTagRespDTO;
+import com.sendtomoon.gethxc.dto.GetListByTagRespDataDTO;
+import com.sendtomoon.gethxc.dto.OrdertextDTO;
+import com.sendtomoon.gethxc.mongo.MongoDAO;
+import com.sendtomoon.gethxc.utils.HeaderUtils;
+import com.sendtomoon.gethxc.utils.HttpUtils;
 
 /**
  */
 public class Controller {
 
 	public void mainService() {
-		// Ò»´ÎÐÔ»ñÈ¡ËùÓÐ½á¹û
+		// Ò»ï¿½ï¿½ï¿½Ô»ï¿½È¡ï¿½ï¿½ï¿½Ð½ï¿½ï¿½
 		GetListByTagRespDTO glbr = this.request(99999);
 		List<GetListByTagRespDataDTO> list = glbr.getData();
 		if (CollectionUtils.isNotEmpty(list)) {
-			this.insert(list);// ½á¹û²»Îª¿ÕÔò²åÈëÊý¾Ý
+			this.insert(list);// ï¿½ï¿½ï¿½ï¿½ï¿½Îªï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 		}
 	}
 
 	/**
-	 * ²åÈëÊý¾Ý
+	 * ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 	 * 
 	 * @param list
 	 */
 	private void insert(List<GetListByTagRespDataDTO> list) {
-		System.err.println("×Ü¼ÇÂ¼Êý" + list.size());
+		System.err.println("ï¿½Ü¼ï¿½Â¼ï¿½ï¿½" + list.size());
 		for (GetListByTagRespDataDTO dataDTO : list) {
-			GetListByTagRespDataDTO result = MongoDAO.isExistOfId(dataDTO.getID());// Í¨¹ýid»ñÈ¡¶ÔÏó£¬ÅÐ¶Ï¶ÔÏóÊÇ·ñÒÑ¾­´æÔÚ
-			// Èç¹û¼ÇÂ¼²»´æÔÚ£¬ÔòÐÂÔöÒ»Ìõ£¬Èç¹û¼ÇÂ¼ÒÑ¾­´æÔÚ£¬Ôò¸üÐÂÔÄ¶ÁÊý
+			GetListByTagRespDataDTO result = MongoDAO.isExistOfId(dataDTO.getID());// Í¨ï¿½ï¿½idï¿½ï¿½È¡ï¿½ï¿½ï¿½ï¿½ï¿½Ð¶Ï¶ï¿½ï¿½ï¿½ï¿½Ç·ï¿½ï¿½Ñ¾ï¿½ï¿½ï¿½ï¿½ï¿½
+			// ï¿½ï¿½ï¿½ï¿½ï¿½Â¼ï¿½ï¿½ï¿½ï¿½ï¿½Ú£ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ò»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Â¼ï¿½Ñ¾ï¿½ï¿½ï¿½ï¿½Ú£ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä¶ï¿½ï¿½ï¿½
 			if (null == result) {
 				dataDTO.setSeq(MongoDAO.nextvalue());
 				MongoDAO.insertOne(dataDTO);
-				System.err.println("²åÈëÒ»Ìõ³É¹¦");
+				System.err.println("ï¿½ï¿½ï¿½ï¿½Ò»ï¿½ï¿½ï¿½É¹ï¿½");
 			} else {
 				this.updateSeeCount(dataDTO);
-				System.err.println("¸üÐÂÒ»Ìõ³É¹¦");
+				System.err.println("ï¿½ï¿½ï¿½ï¿½Ò»ï¿½ï¿½ï¿½É¹ï¿½");
 			}
 		}
 	}
 
 	/**
-	 * ÇëÇóÊý¾Ý²¢½âÎöjson
+	 * ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ý²ï¿½ï¿½ï¿½ï¿½ï¿½json
 	 * 
 	 * @param rows
 	 * @return
@@ -68,7 +68,7 @@ public class Controller {
 	}
 
 	/**
-	 * ÐÞ¸Ä¹Û¿´ÈËÊý
+	 * ï¿½Þ¸Ä¹Û¿ï¿½ï¿½ï¿½ï¿½ï¿½
 	 * 
 	 * @param dataDTO
 	 */

@@ -1,4 +1,4 @@
-package com.sendtommon.gethxc;
+package com.sendtomoon.gethxc;
 
 public class M3U8NotFundException extends Exception {
 
