@@ -6,7 +6,7 @@ import org.springframework.stereotype.Component;
 
 import com.sendtomoon.gethxc.dto.GetListByTagRespDataDTO;
 
-@Component
+//@Component
 public interface HXCDAO {
 	public int add(GetListByTagRespDataDTO dto);
 

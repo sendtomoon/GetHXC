@@ -7,7 +7,7 @@
         http://www.springframework.org/schema/context
         http://www.springframework.org/schema/context/spring-context.xsd">
         
-       <context:component-scan base-package="com.sendtomoon" />
+    <context:component-scan base-package="com.sendtomoon" />
 
 	<bean id="_druidDataSource" class="com.alibaba.druid.pool.DruidDataSource" init-method="init" destroy-method="close">
 		<property name="driverClassName" value="org.mariadb.jdbc.Driver"></property>
@@ -21,9 +21,10 @@
 		<property name="configLocation" value="classpath:mybatis-config.xml" />
 	</bean>
 	
-	<bean id="userMapper" class="org.mybatis.spring.mapper.MapperFactoryBean">
-  <property name="mapperInterface" value="com.sendtomoon.gethxc.HXCDAO" />
-  <property name="sqlSessionFactory" ref="sqlSessionFactory" />
-</bean>
+	<bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+        <property name="sqlSessionFactoryBeanName" value="sqlSessionFactory"/>
+        <property name="basePackage" value="com.sendtomoon" />
+        <property name="annotationClass" value="org.springframework.stereotype.Repository"/>
+    </bean>
 	
 </beans>

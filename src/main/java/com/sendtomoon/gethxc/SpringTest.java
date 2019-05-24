@@ -9,7 +9,7 @@ public class SpringTest {
 	public static void main(String[] args) throws IOException {
 		AbstractApplicationContext context = new ClassPathXmlApplicationContext("spring.xml");
 		context.start();
-		Download md = new Download();
+		Download md = context.getBean(Download.class);
 		md.mainDown();
 		try {
 			Thread.currentThread().join();

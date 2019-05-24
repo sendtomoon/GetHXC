@@ -8,6 +8,7 @@ import java.nio.channels.FileChannel;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import com.sendtomoon.gethxc.config.Config;
 import com.sendtomoon.gethxc.dto.GetListByTagRespDataDTO;
@@ -15,17 +16,13 @@ import com.sendtomoon.gethxc.dto.M3U8DTO;
 import com.sendtomoon.gethxc.utils.DateUtils;
 import com.sendtomoon.gethxc.utils.HttpUtils;
 
+@Component
 public class Download {
 	public static int connTimeout = 60 * 1000;
 	public static int readTimeout = 60 * 1000;
 
 	@Autowired
-	HXCDAO dao;
-
-	public static void main(String[] args) {
-		Download md = new Download();
-		md.mainDown();
-	}
+	DAO dao;
 
 	public void mainDown() {
 		List<GetListByTagRespDataDTO> list = dao.getWaitDown();
