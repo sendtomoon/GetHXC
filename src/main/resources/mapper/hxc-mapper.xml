@@ -76,5 +76,9 @@
 	where
 	id = #{ID}
 	</update>
+	
+	<select id="getDTOById" parameterType="int" resultType="detailDTO">
+		select * from hxc_video where id = #{ID}
+	</select>
 
 </mapper>

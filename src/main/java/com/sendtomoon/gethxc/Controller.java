@@ -3,6 +3,8 @@ package com.sendtomoon.gethxc;
 import java.util.List;
 
 import org.apache.commons.collections4.CollectionUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import com.alibaba.fastjson.JSON;
 import com.sendtomoon.gethxc.config.Config;
@@ -14,7 +16,11 @@ import com.sendtomoon.gethxc.mongo.MongoDAO;
 import com.sendtomoon.gethxc.utils.HeaderUtils;
 import com.sendtomoon.gethxc.utils.HttpUtils;
 
+@Component
 public class Controller {
+
+	@Autowired
+	DAO dao;
 
 	public void mainService() {
 		GetListByTagRespDTO glbr = this.request(99999);// 获取列表
@@ -27,14 +33,14 @@ public class Controller {
 	private void insert(List<GetListByTagRespDataDTO> list) {
 		System.err.println("总数：" + list.size());
 		for (GetListByTagRespDataDTO dataDTO : list) {
-			GetListByTagRespDataDTO result = MongoDAO.isExistOfId(dataDTO.getID());
+			GetListByTagRespDataDTO result = dao.getDTOById(dataDTO.getID());
 			if (null == result) {
 				dataDTO.setSeq(MongoDAO.nextvalue());
 				MongoDAO.insertOne(dataDTO);
-				System.err.println("锟斤拷锟斤拷一锟斤拷锟缴癸拷");
+				System.err.println("插入一条成功" + dataDTO.getID());
 			} else {
 				this.updateSeeCount(dataDTO);
-				System.err.println("锟斤拷锟斤拷一锟斤拷锟缴癸拷");
+				System.err.println("锟斤拷锟斤拷一锟斤拷锟缴癸拷" + dataDTO.getID());
 			}
 		}
 	}
