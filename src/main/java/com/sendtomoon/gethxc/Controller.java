@@ -14,46 +14,31 @@ import com.sendtomoon.gethxc.mongo.MongoDAO;
 import com.sendtomoon.gethxc.utils.HeaderUtils;
 import com.sendtomoon.gethxc.utils.HttpUtils;
 
-/**
- */
 public class Controller {
 
 	public void mainService() {
-		// һ���Ի�ȡ���н��
-		GetListByTagRespDTO glbr = this.request(99999);
+		GetListByTagRespDTO glbr = this.request(99999);// 获取列表
 		List<GetListByTagRespDataDTO> list = glbr.getData();
 		if (CollectionUtils.isNotEmpty(list)) {
-			this.insert(list);// �����Ϊ�����������
+			this.insert(list);
 		}
 	}
 
-	/**
-	 * ��������
-	 * 
-	 * @param list
-	 */
 	private void insert(List<GetListByTagRespDataDTO> list) {
-		System.err.println("�ܼ�¼��" + list.size());
+		System.err.println("总数：" + list.size());
 		for (GetListByTagRespDataDTO dataDTO : list) {
-			GetListByTagRespDataDTO result = MongoDAO.isExistOfId(dataDTO.getID());// ͨ��id��ȡ�����ж϶����Ƿ��Ѿ�����
-			// �����¼�����ڣ�������һ���������¼�Ѿ����ڣ�������Ķ���
+			GetListByTagRespDataDTO result = MongoDAO.isExistOfId(dataDTO.getID());
 			if (null == result) {
 				dataDTO.setSeq(MongoDAO.nextvalue());
 				MongoDAO.insertOne(dataDTO);
-				System.err.println("����һ���ɹ�");
+				System.err.println("锟斤拷锟斤拷一锟斤拷锟缴癸拷");
 			} else {
 				this.updateSeeCount(dataDTO);
-				System.err.println("����һ���ɹ�");
+				System.err.println("锟斤拷锟斤拷一锟斤拷锟缴癸拷");
 			}
 		}
 	}
 
-	/**
-	 * �������ݲ�����json
-	 * 
-	 * @param rows
-	 * @return
-	 */
 	private GetListByTagRespDTO request(int rows) {
 		GetListByTagReqDTO glbt = new GetListByTagReqDTO(1, 99999, null, 0, new OrdertextDTO("AddTime", "desc"));
 		String str = null;
@@ -67,11 +52,6 @@ public class Controller {
 		return glbr;
 	}
 
-	/**
-	 * �޸Ĺۿ�����
-	 * 
-	 * @param dataDTO
-	 */
 	private void updateSeeCount(GetListByTagRespDataDTO dataDTO) {
 		MongoDAO.updateSeeCount(dataDTO.getID(), dataDTO.getSeeCount(), dataDTO.getUrl());
 	}
