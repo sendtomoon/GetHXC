@@ -2,7 +2,6 @@ package com.sendtomoon.gethxc;
 
 import java.util.List;
 
-import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
 import com.sendtomoon.gethxc.dto.GetListByTagRespDataDTO;
@@ -15,6 +14,8 @@ public interface DAO {
 
 	public int update(GetListByTagRespDataDTO dto);
 
-	public GetListByTagRespDataDTO getDTOById(@Param(value = "id") int id);
+	public GetListByTagRespDataDTO getDTOById(int id);
+
+	public int nextValue();
 
 }

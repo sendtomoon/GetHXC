@@ -12,7 +12,6 @@ import com.sendtomoon.gethxc.dto.GetListByTagReqDTO;
 import com.sendtomoon.gethxc.dto.GetListByTagRespDTO;
 import com.sendtomoon.gethxc.dto.GetListByTagRespDataDTO;
 import com.sendtomoon.gethxc.dto.OrdertextDTO;
-import com.sendtomoon.gethxc.mongo.MongoDAO;
 import com.sendtomoon.gethxc.utils.HeaderUtils;
 import com.sendtomoon.gethxc.utils.HttpUtils;
 
@@ -35,12 +34,12 @@ public class Controller {
 		for (GetListByTagRespDataDTO dataDTO : list) {
 			GetListByTagRespDataDTO result = dao.getDTOById(dataDTO.getID());
 			if (null == result) {
-				dataDTO.setSeq(MongoDAO.nextvalue());
-				MongoDAO.insertOne(dataDTO);
-				System.err.println("插入一条成功" + dataDTO.getID());
+				dataDTO.setSeq(dao.nextValue());
+				dao.add(dataDTO);
+				System.err.println("插入一条成功：" + dataDTO.getID());
 			} else {
-				this.updateSeeCount(dataDTO);
-				System.err.println("锟斤拷锟斤拷一锟斤拷锟缴癸拷" + dataDTO.getID());
+				dao.update(dataDTO);
+				System.err.println("更新一条成功：" + dataDTO.getID());
 			}
 		}
 	}
@@ -56,10 +55,6 @@ public class Controller {
 		}
 		GetListByTagRespDTO glbr = JSON.parseObject(str, GetListByTagRespDTO.class);
 		return glbr;
-	}
-
-	private void updateSeeCount(GetListByTagRespDataDTO dataDTO) {
-		MongoDAO.updateSeeCount(dataDTO.getID(), dataDTO.getSeeCount(), dataDTO.getUrl());
 	}
 
 }
