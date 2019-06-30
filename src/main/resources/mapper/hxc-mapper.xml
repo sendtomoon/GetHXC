@@ -72,7 +72,20 @@
 	
 	<update id="update" parameterType="detailDTO">
 	update hxc_video set 
-	downloaded = #{downloaded}
+	collectionCount = #{collectionCount},
+	addTime = #{addTime},
+	disabled = #{disabled},
+	isHot = #{isHot},
+	isNeedLogin = #{isNeedLogin},
+	isRecomend = #{isRecomend},
+	isVip = #{isVip},
+	tags = #{tags},
+	seeCount = #{seeCount},
+	point = #{point},
+	length = #{length},
+	downloaded = #{downloaded},
+	url = #{url},
+	coverImgUrl = #{coverImgUrl}
 	where
 	id = #{ID}
 	</update>
