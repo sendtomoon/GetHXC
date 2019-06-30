@@ -7,6 +7,11 @@ import org.apache.ibatis.type.Alias;
 @Alias("videoTagsDTO")
 public class VideoTagsDTO extends BaseDTO {
 
+	public VideoTagsDTO(int videoId, int tagId) {
+		this.videoId = videoId;
+		this.tagId = tagId;
+	}
+
 	public int getId() {
 		return id;
 	}

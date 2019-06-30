@@ -98,12 +98,12 @@
 		select seq from hxc_video order by seq desc limit 1
 	</select>
 	
-	<select id="isExistTag" parameterType="string" resultType="string">
-		select id from hxc_tags where name = #{string}
+	<select id="getTagId" parameterType="string" resultType="string">
+		select id from hxc_tags where tag_name = #{string}
 	</select>
 	
 	<insert id="insertTag" parameterType="string">
-	insert into hxc_tags (name) values (#{string})
+	insert into hxc_tags (tag_name) values (#{string})
 	</insert>
 	
 	<insert id="insertTagRelate" parameterType="videoTagsDTO">

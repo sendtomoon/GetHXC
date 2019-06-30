@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.stereotype.Repository;
 
 import com.sendtomoon.gethxc.dto.VideoDTO;
+import com.sendtomoon.gethxc.dto.VideoTagsDTO;
 
 @Repository
 public interface DAO {
@@ -18,4 +19,9 @@ public interface DAO {
 
 	public int nextValue();
 
+	public String getTagId(String tag);
+
+	public void insertTag(String tag);
+
+	public void insertTagRelate(VideoTagsDTO fto);
 }
