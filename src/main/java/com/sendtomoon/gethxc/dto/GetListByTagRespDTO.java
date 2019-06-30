@@ -14,7 +14,7 @@ public class GetListByTagRespDTO extends BaseDTO {
 	private Integer recordsSum;
 	private Integer recordsSum2;
 	private Integer recordsTotal;
-	private List<GetListByTagRespDataDTO> data;
+	private List<VideoDTO> data;
 
 	public Integer getCode() {
 		return code;
@@ -72,11 +72,11 @@ public class GetListByTagRespDTO extends BaseDTO {
 		this.recordsTotal = recordsTotal;
 	}
 
-	public List<GetListByTagRespDataDTO> getData() {
+	public List<VideoDTO> getData() {
 		return data;
 	}
 
-	public void setData(List<GetListByTagRespDataDTO> data) {
+	public void setData(List<VideoDTO> data) {
 		this.data = data;
 	}
 

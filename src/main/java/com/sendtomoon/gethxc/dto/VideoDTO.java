@@ -5,7 +5,7 @@ import java.util.Date;
 import org.apache.ibatis.type.Alias;
 
 @Alias(value = "detailDTO")
-public class GetListByTagRespDataDTO extends BaseDTO {
+public class VideoDTO extends BaseDTO {
 
 	private static final long serialVersionUID = 6538968052211907858L;
 	private Date AddTime;

@@ -11,7 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.sendtomoon.gethxc.config.Config;
-import com.sendtomoon.gethxc.dto.GetListByTagRespDataDTO;
+import com.sendtomoon.gethxc.dto.VideoDTO;
 import com.sendtomoon.gethxc.dto.M3U8DTO;
 import com.sendtomoon.gethxc.utils.DateUtils;
 import com.sendtomoon.gethxc.utils.HttpUtils;
@@ -25,9 +25,9 @@ public class Download {
 	DAO dao;
 
 	public void mainDown() {
-		List<GetListByTagRespDataDTO> list = dao.getWaitDown();
+		List<VideoDTO> list = dao.getWaitDown();
 		for (int i = 0; i < list.size(); i++) {
-			GetListByTagRespDataDTO dto = list.get(i);
+			VideoDTO dto = list.get(i);
 			System.err.println(DateUtils.date() + " 开始下载第：" + dto.getSeq() + "。数量：" + dto.getSeeCount());
 			try {
 				Download.download(dto.getUrl(), dto.getFileName());

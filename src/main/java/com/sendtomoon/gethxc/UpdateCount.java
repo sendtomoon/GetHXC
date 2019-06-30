@@ -2,15 +2,15 @@ package com.sendtomoon.gethxc;
 
 import java.util.List;
 
-import com.sendtomoon.gethxc.dto.GetListByTagRespDataDTO;
+import com.sendtomoon.gethxc.dto.VideoDTO;
 import com.sendtomoon.gethxc.mongo.MongoDAO;
 
 public class UpdateCount {
 
 	public static void main(String[] args) {
-		List<GetListByTagRespDataDTO> list = MongoDAO.getOrderBySeeCount();
+		List<VideoDTO> list = MongoDAO.getOrderBySeeCount();
 		int no = 1;
-		for (GetListByTagRespDataDTO dto : list) {
+		for (VideoDTO dto : list) {
 			String filename = "";
 			String strNo = String.valueOf(no);
 			while (strNo.length() < 5) {

@@ -24,12 +24,12 @@ import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.model.Sorts;
 import com.sendtomoon.gethxc.config.Config;
-import com.sendtomoon.gethxc.dto.GetListByTagRespDataDTO;
+import com.sendtomoon.gethxc.dto.VideoDTO;
 
 public class MongoDAO {
 	private static MongoDatabase database = null;
 	private static CodecRegistry pojoCodecRegistry = null;
-	private static MongoCollection<GetListByTagRespDataDTO> collection = null;
+	private static MongoCollection<VideoDTO> collection = null;
 	static {
 		MongoCredential credential = MongoCredential.createCredential(Config.value("mongodb.user"),
 				Config.value("mongodb.database"), Config.value("mongodb.pwd").toCharArray());
@@ -41,14 +41,14 @@ public class MongoDAO {
 		database = mongoClient.getDatabase("hanxiucao");
 		pojoCodecRegistry = fromRegistries(MongoClientSettings.getDefaultCodecRegistry(),
 				fromProviders(PojoCodecProvider.builder().automatic(true).build()));
-		collection = database.getCollection("video_list", GetListByTagRespDataDTO.class);
+		collection = database.getCollection("video_list", VideoDTO.class);
 		collection = collection.withCodecRegistry(pojoCodecRegistry);
 
 	}
 
-	public static void insertMany(List<GetListByTagRespDataDTO> list) {
-		MongoCollection<GetListByTagRespDataDTO> collection = database.getCollection("video_list",
-				GetListByTagRespDataDTO.class);
+	public static void insertMany(List<VideoDTO> list) {
+		MongoCollection<VideoDTO> collection = database.getCollection("video_list",
+				VideoDTO.class);
 		collection = collection.withCodecRegistry(pojoCodecRegistry);
 		collection.insertMany(list);
 	}
@@ -58,19 +58,19 @@ public class MongoDAO {
 	 * 
 	 * @param list
 	 */
-	public static void insertOne(GetListByTagRespDataDTO list) {
+	public static void insertOne(VideoDTO list) {
 		collection.insertOne(list);
 	}
 
-	public static GetListByTagRespDataDTO isExistOfId(Integer id) {
+	public static VideoDTO isExistOfId(Integer id) {
 		return collection.find(eq("iD", id)).first();
 	}
 
-	public static List<GetListByTagRespDataDTO> firstName() {
-		List<GetListByTagRespDataDTO> list = new ArrayList<GetListByTagRespDataDTO>();
-		Consumer<GetListByTagRespDataDTO> sdfs = new Consumer<GetListByTagRespDataDTO>() {
+	public static List<VideoDTO> firstName() {
+		List<VideoDTO> list = new ArrayList<VideoDTO>();
+		Consumer<VideoDTO> sdfs = new Consumer<VideoDTO>() {
 			@Override
-			public void accept(GetListByTagRespDataDTO t) {
+			public void accept(VideoDTO t) {
 				list.add(t);
 			}
 
@@ -79,11 +79,11 @@ public class MongoDAO {
 		return list;
 	}
 
-	public static List<GetListByTagRespDataDTO> getAll() {
-		List<GetListByTagRespDataDTO> list = new ArrayList<GetListByTagRespDataDTO>();
-		Consumer<GetListByTagRespDataDTO> sdfs = new Consumer<GetListByTagRespDataDTO>() {
+	public static List<VideoDTO> getAll() {
+		List<VideoDTO> list = new ArrayList<VideoDTO>();
+		Consumer<VideoDTO> sdfs = new Consumer<VideoDTO>() {
 			@Override
-			public void accept(GetListByTagRespDataDTO t) {
+			public void accept(VideoDTO t) {
 				list.add(t);
 			}
 
@@ -127,11 +127,11 @@ public class MongoDAO {
 	 * 
 	 * @return
 	 */
-	public static List<GetListByTagRespDataDTO> getOrderBySeeCount() {
-		List<GetListByTagRespDataDTO> list = new ArrayList<GetListByTagRespDataDTO>();
-		Consumer<GetListByTagRespDataDTO> sdfs = new Consumer<GetListByTagRespDataDTO>() {
+	public static List<VideoDTO> getOrderBySeeCount() {
+		List<VideoDTO> list = new ArrayList<VideoDTO>();
+		Consumer<VideoDTO> sdfs = new Consumer<VideoDTO>() {
 			@Override
-			public void accept(GetListByTagRespDataDTO t) {
+			public void accept(VideoDTO t) {
 				list.add(t);
 			}
 

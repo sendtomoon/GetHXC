@@ -4,17 +4,17 @@ import java.util.List;
 
 import org.springframework.stereotype.Repository;
 
-import com.sendtomoon.gethxc.dto.GetListByTagRespDataDTO;
+import com.sendtomoon.gethxc.dto.VideoDTO;
 
 @Repository
 public interface DAO {
-	public int add(GetListByTagRespDataDTO dto);
+	public int add(VideoDTO dto);
 
-	public List<GetListByTagRespDataDTO> getWaitDown();
+	public List<VideoDTO> getWaitDown();
 
-	public int update(GetListByTagRespDataDTO dto);
+	public int update(VideoDTO dto);
 
-	public GetListByTagRespDataDTO getDTOById(int id);
+	public VideoDTO getDTOById(int id);
 
 	public int nextValue();
 

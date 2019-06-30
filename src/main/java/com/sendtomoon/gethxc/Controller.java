@@ -10,7 +10,7 @@ import com.alibaba.fastjson.JSON;
 import com.sendtomoon.gethxc.config.Config;
 import com.sendtomoon.gethxc.dto.GetListByTagReqDTO;
 import com.sendtomoon.gethxc.dto.GetListByTagRespDTO;
-import com.sendtomoon.gethxc.dto.GetListByTagRespDataDTO;
+import com.sendtomoon.gethxc.dto.VideoDTO;
 import com.sendtomoon.gethxc.dto.OrdertextDTO;
 import com.sendtomoon.gethxc.utils.HeaderUtils;
 import com.sendtomoon.gethxc.utils.HttpUtils;
@@ -23,16 +23,16 @@ public class Controller {
 
 	public void mainService() {
 		GetListByTagRespDTO glbr = this.request(99999);// 获取列表
-		List<GetListByTagRespDataDTO> list = glbr.getData();
+		List<VideoDTO> list = glbr.getData();
 		if (CollectionUtils.isNotEmpty(list)) {
 			this.insert(list);
 		}
 	}
 
-	private void insert(List<GetListByTagRespDataDTO> list) {
+	private void insert(List<VideoDTO> list) {
 		System.err.println("总数：" + list.size());
-		for (GetListByTagRespDataDTO dataDTO : list) {
-			GetListByTagRespDataDTO result = dao.getDTOById(dataDTO.getID());
+		for (VideoDTO dataDTO : list) {
+			VideoDTO result = dao.getDTOById(dataDTO.getID());
 			if (null == result) {
 				dataDTO.setSeq(dao.nextValue());
 				dao.add(dataDTO);
@@ -55,6 +55,40 @@ public class Controller {
 		}
 		GetListByTagRespDTO glbr = JSON.parseObject(str, GetListByTagRespDTO.class);
 		return glbr;
+	}
+
+	private void tags(VideoDTO dto) {
+		String[] tagsArr = dto.getTags().split(",");
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
 	}
 
 }
