@@ -67,7 +67,26 @@
 	
 	<select id="getWaitDown" resultType="detailDTO">
 	select * from hxc_video where downloaded = '0' 
-	and (tags like '%'||'精选系列'||'%' or tags like '%'||'国产'||'%' or tags like '%'||'网红'||'%' or tags like '%'||'主播'||'%')
+	and id IN (
+	SELECT DISTINCT
+		video_id
+	FROM
+		hxc_video_tags
+	WHERE
+		tag_id IN (
+			SELECT
+				id
+			FROM
+				hxc_tags
+			WHERE
+				tag_name IN (
+					'精选系列',
+					'国产',
+					'网红',
+					'主播'
+				)
+		)
+)
 	</select>
 	
 	<update id="update" parameterType="detailDTO">

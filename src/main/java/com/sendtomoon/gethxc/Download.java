@@ -47,7 +47,7 @@ public class Download {
 		}
 	}
 
-	private static void download(String m3u8url, String fileName) throws Exception {
+	public static void download(String m3u8url, String fileName) throws Exception {
 		File tfile = new File(Config.value("tempDir"));
 		deleteDir(tfile);
 		M3U8DTO M3U8 = getM3U8ByURL(m3u8url);
