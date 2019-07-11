@@ -8,7 +8,11 @@ public class GetHXC {
 		AbstractApplicationContext context = new ClassPathXmlApplicationContext("spring.xml");
 		context.start();
 		Controller controller = context.getBean(Controller.class);
-		controller.mainService();
+		try {
+			controller.mainService();
+		} catch (Exception e1) {
+			e1.printStackTrace();
+		}
 		try {
 			Thread.currentThread().join();
 		} catch (InterruptedException e) {

@@ -23,7 +23,7 @@ public class Controller {
 	@Autowired
 	DAO dao;
 
-	public void mainService() {
+	public void mainService() throws Exception {
 		GetListByTagRespDTO glbr = this.request(99999);// 获取列表
 		List<VideoDTO> list = glbr.getData();
 		if (CollectionUtils.isNotEmpty(list)) {
@@ -31,7 +31,7 @@ public class Controller {
 		}
 	}
 
-	private void insert(List<VideoDTO> list) {
+	private void insert(List<VideoDTO> list) throws Exception {
 		System.err.println("总数：" + list.size());
 		for (VideoDTO dataDTO : list) {
 			VideoDTO result = dao.getDTOById(dataDTO.getID());

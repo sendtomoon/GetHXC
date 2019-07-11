@@ -6,34 +6,46 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpHost;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.CookieStore;
+import org.apache.http.client.config.CookieSpecs;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.client.protocol.HttpClientContext;
+import org.apache.http.cookie.Cookie;
 import org.apache.http.entity.StringEntity;
+import org.apache.http.impl.client.BasicCookieStore;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
+import org.apache.http.impl.cookie.BasicClientCookie;
+import org.apache.http.params.DefaultedHttpParams;
+import org.apache.http.params.HttpParams;
 
 import com.sendtomoon.gethxc.dto.M3U8DTO;
 
 public class HttpUtils {
+
+
 	public static String post(String url, String request, String proxyUrl, Map<String, String> header)
 			throws Exception {
-		CloseableHttpClient httpclient = HttpClients.custom().build();
+		CookieStore cookieStore = new BasicCookieStore();
+		CloseableHttpClient httpclient = HttpClients.custom().setDefaultCookieStore(cookieStore).build();
+
 		try {
 			HttpPost httpPost = new HttpPost(url);
-			// ����ͷ��Ϣ
 			if (MapUtils.isNotEmpty(header)) {
 				for (Map.Entry<String, String> entry : header.entrySet()) {
 					httpPost.addHeader(entry.getKey(), entry.getValue());
 				}
 			}
-			// �����������
 			if (StringUtils.isNotBlank(request)) {
 				HttpEntity entity = new StringEntity(request);
 				httpPost.setEntity(entity);
@@ -43,7 +55,11 @@ public class HttpUtils {
 				HttpUtils.setProxy(httpPost, proxyUrl);
 			}
 			CloseableHttpResponse response = httpclient.execute(httpPost);
+
 			try {
+				System.err.println(cookieStore);
+				List<Cookie> cookies = cookieStore.getCookies();
+//				cookieStore = localContext.getCookieStore();
 				HttpEntity respEntity = response.getEntity();
 				if (respEntity != null) {
 					InputStream inStream = respEntity.getContent();
