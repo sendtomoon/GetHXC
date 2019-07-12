@@ -27,8 +27,13 @@ values
 (<include refid="FieldValue" />)
 	</insert>
 	
+	<select id="getHxcVideo" resultType="detailDTO">
+	select * from hxc_video order by seeCount desc
+	</select>
+	
 	<select id="getWaitDown" resultType="detailDTO">
-	select * from hxc_video where downloaded = '0' 
+	select * from hxc_video where downloaded = '0' and 	(url != '' OR url IS not NULL)
+ 
 	and id IN (
 	SELECT DISTINCT
 video_id
@@ -48,7 +53,7 @@ tag_name IN (
 	'主播'
 	)
 	)
-)
+) order by seq
 	</select>
 	
 	<update id="update" parameterType="detailDTO">
@@ -65,8 +70,21 @@ tag_name IN (
 	point = #{point},
 	length = #{length},
 	downloaded = #{downloaded},
-	url = #{url},
+<!-- 	url = #{url}, -->
 	coverImgUrl = #{coverImgUrl}
+	where
+	id = #{ID}
+	</update>
+	
+	<update id="updateURL" parameterType="detailDTO">
+	update hxc_video set 
+	url = #{url}
+	where
+	id = #{ID}
+	</update>
+	<update id="updateSeq" parameterType="detailDTO">
+	update hxc_video set 
+	seq = #{seq}
 	where
 	id = #{ID}
 	</update>

@@ -45,6 +45,7 @@ public class Download {
 				continue;
 			}
 		}
+
 	}
 
 	public static void download(String m3u8url, String fileName) throws Exception {
@@ -58,16 +59,13 @@ public class Download {
 		int size = M3U8.getTsList().size();
 		for (int i = 0; i < size; i++) {
 			M3U8DTO.Ts ts = M3U8.getTsList().get(i);
-			File file = new File(Config.value("tempDir") + File.separator + ts.getFile());
+			String[] arr = ts.getFile().split("/");
+			File file = new File(Config.value("tempDir") + File.separator + arr[arr.length - 1]);
 			if (!file.exists()) {
-				try {
-					System.err.println(DateUtils.date() + "当前进度" + new BigDecimal(i)
-							.divide(new BigDecimal(size), 4, BigDecimal.ROUND_DOWN).multiply(new BigDecimal(100))
-							+ "%");
-					HttpUtils.download(basePath + ts.getFile(), "127.0.0.1:1080", file);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
+				System.err.println(DateUtils.date() + "当前进度" + new BigDecimal(i)
+						.divide(new BigDecimal(size), 4, BigDecimal.ROUND_DOWN).multiply(new BigDecimal(100)) + "%");
+//				HttpUtils.download(basePath + ts.getFile(), "127.0.0.1:1080", file);
+				HttpUtils.download(ts.getFile(), "127.0.0.1:1080", file);
 			}
 		}
 //		M3U8.getTsList().stream().parallel().forEach(ts -> {

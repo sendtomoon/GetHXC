@@ -12,8 +12,14 @@ public interface DAO {
 	public int add(VideoDTO dto);
 
 	public List<VideoDTO> getWaitDown();
+	
+	public List<VideoDTO> getHxcVideo();
 
 	public int update(VideoDTO dto);
+	
+	public int updateURL(VideoDTO dto);
+	
+	public int updateSeq(VideoDTO dto);
 
 	public VideoDTO getDTOById(int id);
 

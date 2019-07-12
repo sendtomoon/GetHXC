@@ -25,6 +25,18 @@ public class Controller {
 	@Autowired
 	DAO dao;
 
+	public void renewFile() {
+		List<VideoDTO> list = dao.getHxcVideo();
+		for (int i = 0; i < list.size(); i++) {
+			VideoDTO dataDTO = list.get(i);
+			VideoDTO update = new VideoDTO();
+			update.setID(dataDTO.getID());
+			update.setSeq(i + 1);
+			System.err.println(JSON.toJSON(update));
+			dao.updateSeq(update);
+		}
+	}
+
 	public void updateUrl() {
 		List<VideoDTO> list = dao.getUrlNull();
 		if (CollectionUtils.isNotEmpty(list)) {
@@ -54,12 +66,10 @@ public class Controller {
 				dao.add(dataDTO);
 				System.err.println("插入一条成功：" + dataDTO.getID());
 			} else {
-				String url = this.getClient(String.valueOf(dataDTO.getID()));
-				dataDTO.setUrl(url);
 				dao.update(dataDTO);
 				System.err.println("更新一条成功：" + dataDTO.getID());
 			}
-			this.tags(dataDTO);
+//			this.tags(dataDTO);
 		}
 	}
 
@@ -69,6 +79,9 @@ public class Controller {
 					"{\"videoID\":\"" + videoId + "\",\"userID\":2210195,\"ClientType\":5}", "127.0.0.1:1080",
 					HeaderUtils.getClientHeader());
 			Thread.sleep(1000);
+			if (!JSON.isValid(str)) {
+				return null;
+			}
 			JSONObject jo = JSON.parseObject(str).getJSONObject("data");
 			return jo.getString("Url");
 		} catch (Exception e) {
