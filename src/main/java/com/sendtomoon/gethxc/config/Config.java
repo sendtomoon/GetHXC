@@ -17,9 +17,6 @@ public class Config {
 					new File(System.getProperty("user.dir") + "//src//main//resources//config.properties"));
 			properties = new Properties();
 			properties.load(is);
-			is = new FileInputStream(
-					new File(System.getProperty("user.dir") + "//src//main//resources//mongodb.properties"));
-			properties.load(is);
 			properties.setProperty("user.dir", System.getProperty("user.dir"));
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
@@ -50,6 +47,35 @@ public class Config {
 		InputStream is;
 		try {
 			is = new FileInputStream(new File(Config.value("user.dir") + "//src//main//resources//header.properties"));
+			Properties properties = new Properties();
+			properties.load(is);
+			return properties;
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+
+	public static Properties getClientHeader() {
+		InputStream is;
+		try {
+			is = new FileInputStream(new File(Config.value("user.dir") + "//src//main//resources//clientheader.properties"));
+			Properties properties = new Properties();
+			properties.load(is);
+			return properties;
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+	public static Properties getLoginHeader() {
+		InputStream is;
+		try {
+			is = new FileInputStream(new File(Config.value("user.dir") + "//src//main//resources//loginheader.properties"));
 			Properties properties = new Properties();
 			properties.load(is);
 			return properties;

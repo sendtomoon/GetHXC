@@ -8,13 +8,26 @@ import java.util.Map.Entry;
 import com.sendtomoon.gethxc.config.Config;
 
 public class HeaderUtils {
-	/**
-	 * post����ͷ��Ϣ
-	 * 
-	 * @return
-	 */
-	public static Map<String, String> getHeader() {
+	public static Map<String, String> getListHeader() {
 		Properties properties = Config.getHeader();
+		Map<String, String> map = new LinkedHashMap<String, String>();
+		for (Entry<Object, Object> entry : properties.entrySet()) {
+			map.put((String) entry.getKey(), (String) entry.getValue());
+		}
+		return map;
+	}
+
+	public static Map<String, String> getClientHeader() {
+		Properties properties = Config.getClientHeader();
+		Map<String, String> map = new LinkedHashMap<String, String>();
+		for (Entry<Object, Object> entry : properties.entrySet()) {
+			map.put((String) entry.getKey(), (String) entry.getValue());
+		}
+		return map;
+	}
+	
+	public static Map<String, String> getLoginHeader() {
+		Properties properties = Config.getLoginHeader();
 		Map<String, String> map = new LinkedHashMap<String, String>();
 		for (Entry<Object, Object> entry : properties.entrySet()) {
 			map.put((String) entry.getKey(), (String) entry.getValue());

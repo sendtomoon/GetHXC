@@ -24,4 +24,8 @@ public interface DAO {
 	public void insertTag(String tag);
 
 	public void insertTagRelate(VideoTagsDTO fto);
+	
+	public void delTagRelated(String videoId);
+	
+	public List<VideoDTO> getUrlNull();
 }

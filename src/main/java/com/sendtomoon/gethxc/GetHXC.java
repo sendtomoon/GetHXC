@@ -9,7 +9,8 @@ public class GetHXC {
 		context.start();
 		Controller controller = context.getBean(Controller.class);
 		try {
-			controller.mainService();
+//			controller.mainService();
+			controller.updateUrl();
 		} catch (Exception e1) {
 			e1.printStackTrace();
 		}

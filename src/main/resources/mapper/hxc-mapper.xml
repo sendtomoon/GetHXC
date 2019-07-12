@@ -6,51 +6,13 @@
 
 <!-- 字段 -->
 	<sql id="Field">
-		id,
-		addTime,
-		collectionCount,
-		coverImgUrl,
-		disabled,
-		isHot,
-		isNeedLogin,
-		isRecomend,
-		isVip,
-		length,
-		name,
-		no,
-		point,
-		seeCount,
-		tags,
-		typeID,
-		typeName,
-		url,
-		downloaded,
-		fileName,
-		seq
+	id,addTime,collectionCount,coverImgUrl,disabled,isHot,isNeedLogin,isRecomend,isVip,length,
+	name,no,point,seeCount,tags,typeID,typeName,url,downloaded,fileName,seq
 	</sql>
 	
 	<sql id="FieldValue">
-		#{ID},
-		#{AddTime},
-		#{CollectionCount},
-		#{CoverImgUrl},
-		#{Disabled},
-		#{IsHot},
-		#{IsNeedLogin},
-		#{IsRecomend},
-		#{IsVip},
-		#{Length},
-		#{Name},
-		#{No},
-		#{Point},
-		#{SeeCount},
-		#{Tags},
-		#{TypeID},
-		#{TypeName},
-		#{Url},
-		#{downloaded},
-		#{fileName},
-		#{seq}
+	#{ID},#{AddTime},#{CollectionCount},#{CoverImgUrl},#{Disabled},#{IsHot},#{IsNeedLogin},#{IsRecomend},
+	#{IsVip},#{Length},#{Name},#{No},#{Point},#{SeeCount},#{Tags},#{TypeID},#{TypeName},#{Url},#{downloaded},#{fileName},#{seq}
 	</sql>
 	
 	<select id="test" resultType="String">
@@ -58,34 +20,34 @@
 	</select>
 
 	<insert id="add" parameterType="detailDTO">
-		insert into
-			hxc_video
-		(<include refid="Field" />)
-		values
-		(<include refid="FieldValue" />)
+insert into
+	hxc_video
+(<include refid="Field" />)
+values
+(<include refid="FieldValue" />)
 	</insert>
 	
 	<select id="getWaitDown" resultType="detailDTO">
 	select * from hxc_video where downloaded = '0' 
 	and id IN (
 	SELECT DISTINCT
-		video_id
+video_id
 	FROM
-		hxc_video_tags
+hxc_video_tags
 	WHERE
-		tag_id IN (
-			SELECT
-				id
-			FROM
-				hxc_tags
-			WHERE
-				tag_name IN (
-					'精选系列',
-					'国产',
-					'网红',
-					'主播'
-				)
-		)
+tag_id IN (
+	SELECT
+id
+	FROM
+hxc_tags
+	WHERE
+tag_name IN (
+	'精选系列',
+	'国产',
+	'网红',
+	'主播'
+	)
+	)
 )
 	</select>
 	
@@ -110,15 +72,15 @@
 	</update>
 	
 	<select id="getDTOById" parameterType="int" resultType="detailDTO">
-		select * from hxc_video where id = #{ID}
+select * from hxc_video where id = #{ID}
 	</select>
 	
 	<select id="nextValue" resultType="int">
-		select seq from hxc_video order by seq desc limit 1
+select seq from hxc_video order by seq desc limit 1
 	</select>
 	
 	<select id="getTagId" parameterType="string" resultType="string">
-		select id from hxc_tags where tag_name = #{string}
+select id from hxc_tags where tag_name = #{string}
 	</select>
 	
 	<insert id="insertTag" parameterType="string">
@@ -129,9 +91,33 @@
 	insert into hxc_video_tags (video_id,tag_id) values (#{videoId},#{tagId})
 	</insert>
 	
+	<delete id="delTagRelated" parameterType="string">
+	delete from hxc_video_tags where video_id = #{videoId}
+	</delete>
 	
-	
-	
+	<select id="getUrlNull"  resultType="detailDTO">
+	select * from hxc_video where	(url = '' OR url IS NULL)
+AND id IN (
+	SELECT DISTINCT
+video_id
+	FROM
+hxc_video_tags
+	WHERE
+tag_id IN (
+	SELECT
+id
+	FROM
+hxc_tags
+	WHERE
+tag_name IN (
+	'精选系列',
+	'国产',
+	'网红',
+	'主播'
+)
+)
+)
+	</select>
 	
 	
 	

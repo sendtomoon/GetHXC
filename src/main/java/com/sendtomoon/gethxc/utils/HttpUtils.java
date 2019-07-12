@@ -13,34 +13,34 @@ import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpHost;
-import org.apache.http.HttpResponse;
-import org.apache.http.client.CookieStore;
-import org.apache.http.client.config.CookieSpecs;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpPost;
-import org.apache.http.client.protocol.HttpClientContext;
 import org.apache.http.cookie.Cookie;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.BasicCookieStore;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
-import org.apache.http.impl.cookie.BasicClientCookie;
-import org.apache.http.params.DefaultedHttpParams;
-import org.apache.http.params.HttpParams;
 
 import com.sendtomoon.gethxc.dto.M3U8DTO;
 
 public class HttpUtils {
-
-
 	public static String post(String url, String request, String proxyUrl, Map<String, String> header)
 			throws Exception {
-		CookieStore cookieStore = new BasicCookieStore();
+		return HttpUtils.post(url, request, proxyUrl, header, null);
+	}
+
+	public static String post(String url, String request, String proxyUrl, Map<String, String> header, Cookie[] cookies)
+			throws Exception {
+		BasicCookieStore cookieStore = new BasicCookieStore();
+		if (cookies != null) {
+			cookieStore.addCookies(cookies);
+		}
 		CloseableHttpClient httpclient = HttpClients.custom().setDefaultCookieStore(cookieStore).build();
 
 		try {
 			HttpPost httpPost = new HttpPost(url);
+
 			if (MapUtils.isNotEmpty(header)) {
 				for (Map.Entry<String, String> entry : header.entrySet()) {
 					httpPost.addHeader(entry.getKey(), entry.getValue());
@@ -57,9 +57,9 @@ public class HttpUtils {
 			CloseableHttpResponse response = httpclient.execute(httpPost);
 
 			try {
-				System.err.println(cookieStore);
-				List<Cookie> cookies = cookieStore.getCookies();
-//				cookieStore = localContext.getCookieStore();
+				List<Cookie> cookieList = cookieStore.getCookies();
+				for (Cookie cookie : cookieList) {
+				}
 				HttpEntity respEntity = response.getEntity();
 				if (respEntity != null) {
 					InputStream inStream = respEntity.getContent();
@@ -89,7 +89,7 @@ public class HttpUtils {
 	private static void setProxy(HttpPost httpPost, String proxyUrl) {
 		String[] arr = proxyUrl.split(":");
 		HttpHost httpHost = new HttpHost(arr[0], Integer.valueOf(arr[1]));
-		RequestConfig config = RequestConfig.custom().setProxy(httpHost).build();
+		RequestConfig config = RequestConfig.custom().setProxy(httpHost).setConnectTimeout(10000).build();
 		httpPost.setConfig(config);
 	}
 
