@@ -32,9 +32,19 @@ public class Controller {
 			VideoDTO update = new VideoDTO();
 			update.setID(dataDTO.getID());
 			update.setSeq(i + 1);
+			update.setFileName(this.zero(update.getSeq()) + "_" + dataDTO.getName().replace(" ", "_").replace("\"", "")
+					.replace("“", "").replace("”", "").replace("\\", "").replace("'", "").replace("\\.", ""));
 			System.err.println(JSON.toJSON(update));
 			dao.updateSeq(update);
 		}
+	}
+
+	private String zero(Integer startNo) {
+		String no = String.valueOf(startNo);
+		while (no.length() < 5) {
+			no = "0" + no;
+		}
+		return no;
 	}
 
 	public void updateUrl() {

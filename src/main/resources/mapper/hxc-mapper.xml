@@ -84,7 +84,7 @@ tag_name IN (
 	</update>
 	<update id="updateSeq" parameterType="detailDTO">
 	update hxc_video set 
-	seq = #{seq}
+	seq = #{seq},fileName=#{fileName}
 	where
 	id = #{ID}
 	</update>
