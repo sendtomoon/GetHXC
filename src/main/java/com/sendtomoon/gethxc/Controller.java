@@ -59,11 +59,15 @@ public class Controller {
 		}
 	}
 
-	public void mainService() throws Exception {
+	public void mainService() {
 		GetListByTagRespDTO glbr = this.request(99999);// 获取列表
 		List<VideoDTO> list = glbr.getData();
 		if (CollectionUtils.isNotEmpty(list)) {
-			this.insert(list);
+			try {
+				this.insert(list);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
 		}
 	}
 

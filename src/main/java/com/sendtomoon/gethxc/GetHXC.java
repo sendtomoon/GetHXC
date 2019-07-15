@@ -8,12 +8,14 @@ public class GetHXC {
 		AbstractApplicationContext context = new ClassPathXmlApplicationContext("spring.xml");
 		context.start();
 		Controller controller = context.getBean(Controller.class);
-		try {
+		String SWITCH = "";
+		switch (SWITCH) {
+		case "RENEW_LIST":// 更新主表所有数据
 			controller.mainService();
-//			controller.updateUrl();
-//			controller.renewFile();
-		} catch (Exception e1) {
-			e1.printStackTrace();
+		case "UPDATE_URL":// 更新URL地址
+			controller.updateUrl();
+		case "RENEW_SEQ":// 从本地更新序列、标签
+			controller.renewFile();
 		}
 		try {
 			Thread.currentThread().join();

@@ -1,4 +1,4 @@
-package com.sendtomoon.gethxc;
+package com.sendtomoon.gethxc.servie;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -8,16 +8,18 @@ import java.nio.channels.FileChannel;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
+import com.sendtomoon.gethxc.DAO;
+import com.sendtomoon.gethxc.M3U8NotFundException;
 import com.sendtomoon.gethxc.config.Config;
-import com.sendtomoon.gethxc.dto.VideoDTO;
 import com.sendtomoon.gethxc.dto.M3U8DTO;
+import com.sendtomoon.gethxc.dto.VideoDTO;
 import com.sendtomoon.gethxc.utils.DateUtils;
 import com.sendtomoon.gethxc.utils.HttpUtils;
 
-@Component
-public class Download {
+@Service
+public class DownloadService {
 	public static int connTimeout = 60 * 1000;
 	public static int readTimeout = 60 * 1000;
 
@@ -30,7 +32,7 @@ public class Download {
 			VideoDTO dto = list.get(i);
 			System.err.println(DateUtils.date() + " 开始下载第：" + dto.getSeq() + "。数量：" + dto.getSeeCount());
 			try {
-				Download.download(dto.getUrl(), dto.getFileName());
+				this.download(dto.getUrl(), dto.getFileName());
 				dto.setDownloaded(1);
 				dao.update(dto);
 			} catch (M3U8NotFundException e) {
@@ -48,7 +50,7 @@ public class Download {
 
 	}
 
-	public static void download(String m3u8url, String fileName) throws Exception {
+	public void download(String m3u8url, String fileName) throws Exception {
 		File tfile = new File(Config.value("tempDir"));
 		deleteDir(tfile);
 		M3U8DTO M3U8 = getM3U8ByURL(m3u8url);
@@ -82,7 +84,7 @@ public class Download {
 		mergeFiles(tfile.listFiles(), Config.value("downloadDir") + fileName + ".ts");
 	}
 
-	public static M3U8DTO getM3U8ByURL(String m3u8URL) {
+	public M3U8DTO getM3U8ByURL(String m3u8URL) {
 		try {
 			return HttpUtils.getM3u8(m3u8URL);
 		} catch (Exception e) {
@@ -91,7 +93,7 @@ public class Download {
 		return null;
 	}
 
-	public static boolean mergeFiles(File[] fpaths, String resultPath) {
+	public boolean mergeFiles(File[] fpaths, String resultPath) {
 		if (fpaths == null || fpaths.length < 1) {
 			return false;
 		}
@@ -127,7 +129,7 @@ public class Download {
 		return true;
 	}
 
-	private static boolean deleteDir(File dir) {
+	private boolean deleteDir(File dir) {
 		if (!dir.exists()) {
 			dir.mkdirs();
 			return true;
