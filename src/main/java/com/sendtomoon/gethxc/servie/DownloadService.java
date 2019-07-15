@@ -30,7 +30,7 @@ public class DownloadService {
 		List<VideoDTO> list = dao.getWaitDown();
 		for (int i = 0; i < list.size(); i++) {
 			VideoDTO dto = list.get(i);
-			System.err.println(DateUtils.date() + " 开始下载第：" + dto.getSeq() + "。数量：" + dto.getSeeCount());
+			System.err.println(DateUtils.date() + " 开始下载第：" + dto.getSeq() + "。SEQ：" + dto.getSeeCount());
 			try {
 				this.download(dto.getUrl(), dto.getFileName());
 				dto.setDownloaded(1);
@@ -57,17 +57,22 @@ public class DownloadService {
 		if (null == M3U8) {
 			throw new M3U8NotFundException("M3U8获取失败" + "   " + fileName);
 		}
-		String basePath = M3U8.getBasepath();
+//		String basePath = M3U8.getBasepath();
 		int size = M3U8.getTsList().size();
 		for (int i = 0; i < size; i++) {
 			M3U8DTO.Ts ts = M3U8.getTsList().get(i);
 			String[] arr = ts.getFile().split("/");
 			File file = new File(Config.value("tempDir") + File.separator + arr[arr.length - 1]);
 			if (!file.exists()) {
+				try {
+					file.createNewFile();
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
 				System.err.println(DateUtils.date() + "当前进度" + new BigDecimal(i)
 						.divide(new BigDecimal(size), 4, BigDecimal.ROUND_DOWN).multiply(new BigDecimal(100)) + "%");
 //				HttpUtils.download(basePath + ts.getFile(), "127.0.0.1:1080", file);
-				HttpUtils.download(ts.getFile(), "127.0.0.1:1080", file);
+				HttpUtils.download(ts.getFile(), null, file);
 			}
 		}
 //		M3U8.getTsList().stream().parallel().forEach(ts -> {
@@ -129,21 +134,9 @@ public class DownloadService {
 		return true;
 	}
 
-	private boolean deleteDir(File dir) {
-		if (!dir.exists()) {
-			dir.mkdirs();
-			return true;
-		}
-		if (dir.isDirectory()) {
-			String[] children = dir.list();
-			for (int i = 0; i < children.length; i++) {
-				boolean success = deleteDir(new File(dir, children[i]));
-				if (!success) {
-					return false;
-				}
-			}
-		}
-		return dir.delete();
+	private void deleteDir(File dir) {
+		dir.delete();
+		dir.mkdirs();
 	}
 
 }

@@ -4,155 +4,142 @@
   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.sendtomoon.gethxc.DAO">
 
-<!-- 字段 -->
+	<!-- 字段 -->
 	<sql id="Field">
-	id,addTime,collectionCount,coverImgUrl,disabled,isHot,isNeedLogin,isRecomend,isVip,length,
-	name,no,point,seeCount,tags,typeID,typeName,url,downloaded,fileName,seq
+		id,addTime,collectionCount,coverImgUrl,disabled,isHot,isNeedLogin,isRecomend,isVip,length,
+		name,no,point,seeCount,tags,typeID,typeName,url,downloaded,fileName,seq
 	</sql>
-	
+
 	<sql id="FieldValue">
-	#{ID},#{AddTime},#{CollectionCount},#{CoverImgUrl},#{Disabled},#{IsHot},#{IsNeedLogin},#{IsRecomend},
-	#{IsVip},#{Length},#{Name},#{No},#{Point},#{SeeCount},#{Tags},#{TypeID},#{TypeName},#{Url},#{downloaded},#{fileName},#{seq}
+		#{ID},#{AddTime},#{CollectionCount},#{CoverImgUrl},#{Disabled},#{IsHot},#{IsNeedLogin},#{IsRecomend},
+		#{IsVip},#{Length},#{Name},#{No},#{Point},#{SeeCount},#{Tags},#{TypeID},#{TypeName},#{Url},#{downloaded},#{fileName},#{seq}
 	</sql>
-	
+
 	<select id="test" resultType="String">
-	select current_timestamp() from dual
+		select current_timestamp() from
+		dual
 	</select>
 
 	<insert id="add" parameterType="detailDTO">
-insert into
-	hxc_video
-(<include refid="Field" />)
-values
-(<include refid="FieldValue" />)
+		insert into
+		hxc_video
+		(
+		<include refid="Field" />
+		)
+		values
+		(
+		<include refid="FieldValue" />
+		)
 	</insert>
-	
+
 	<select id="getHxcVideo" resultType="detailDTO">
-	select * from hxc_video order by seeCount desc
+		select * from hxc_video order by seeCount desc
 	</select>
 	
+	<select id="getHxcVideoForFileName" resultType="detailDTO">
+		select seq,id,fileName,name from hxc_video where downloaded = '0'
+	</select>
+
 	<select id="getWaitDown" resultType="detailDTO">
-	select * from hxc_video where downloaded = '0' and 	(url != '' OR url IS not NULL)
- 
-	and id IN (
-	SELECT DISTINCT
-video_id
-	FROM
-hxc_video_tags
-	WHERE
-tag_id IN (
-	SELECT
-id
-	FROM
-hxc_tags
-	WHERE
-tag_name IN (
-	'精选系列',
-	'国产',
-	'网红',
-	'主播'
-	)
-	)
-) order by seq
+		select * from hxc_video
+		where downloaded = '0' and (url != '' OR url IS not NULL)
+		and id IN (
+		SELECT DISTINCT video_id FROM hxc_video_tags WHERE
+		tag_id IN (
+		SELECT id FROM hxc_tags WHERE tag_name IN ('精选系列','国产','网红','主播','萝莉'))) order by seq
 	</select>
-	
+
 	<update id="update" parameterType="detailDTO">
-	update hxc_video set 
-	collectionCount = #{collectionCount},
-	addTime = #{addTime},
-	disabled = #{disabled},
-	isHot = #{isHot},
-	isNeedLogin = #{isNeedLogin},
-	isRecomend = #{isRecomend},
-	isVip = #{isVip},
-	tags = #{tags},
-	seeCount = #{seeCount},
-	point = #{point},
-	length = #{length},
-	downloaded = #{downloaded},
-<!-- 	url = #{url}, -->
-	coverImgUrl = #{coverImgUrl}
-	where
-	id = #{ID}
+		update hxc_video set
+		collectionCount = #{collectionCount},
+		addTime = #{addTime},
+		disabled = #{disabled},
+		isHot = #{isHot},
+		isNeedLogin =
+		#{isNeedLogin},
+		isRecomend = #{isRecomend},
+		isVip = #{isVip},
+		tags = #{tags},
+		seeCount = #{seeCount},
+		point = #{point},
+		length = #{length},
+		downloaded = #{downloaded},
+		seq = #{seq},
+		coverImgUrl = #{coverImgUrl}
+		where  id = #{ID}
 	</update>
 	
+	<update id="updateFileName" parameterType="detailDTO">
+		update hxc_video set fileName = #{fileName} where  id = #{ID}
+	</update>
+
 	<update id="updateURL" parameterType="detailDTO">
-	update hxc_video set 
-	url = #{url}
-	where
-	id = #{ID}
+		update hxc_video set url = #{url} where id = #{ID}
 	</update>
 	<update id="updateSeq" parameterType="detailDTO">
-	update hxc_video set 
-	seq = #{seq},fileName=#{fileName}
-	where
-	id = #{ID}
+		update hxc_video set
+		seq =
+		#{seq},fileName=#{fileName}
+		where
+		id = #{ID}
 	</update>
-	
+
 	<select id="getDTOById" parameterType="int" resultType="detailDTO">
-select * from hxc_video where id = #{ID}
+		select * from hxc_video where id = #{ID}
 	</select>
-	
+
 	<select id="nextValue" resultType="int">
-select seq from hxc_video order by seq desc limit 1
+		select seq from hxc_video
+		order by seq desc limit 1
 	</select>
-	
+
 	<select id="getTagId" parameterType="string" resultType="string">
-select id from hxc_tags where tag_name = #{string}
+		select
+		id from hxc_tags where tag_name = #{string}
 	</select>
-	
+
 	<insert id="insertTag" parameterType="string">
-	insert into hxc_tags (tag_name) values (#{string})
+		insert into hxc_tags
+		(tag_name) values (#{string})
 	</insert>
-	
+
 	<insert id="insertTagRelate" parameterType="videoTagsDTO">
-	insert into hxc_video_tags (video_id,tag_id) values (#{videoId},#{tagId})
+		insert into
+		hxc_video_tags (video_id,tag_id) values (#{videoId},#{tagId})
 	</insert>
-	
+
 	<delete id="delTagRelated" parameterType="string">
-	delete from hxc_video_tags where video_id = #{videoId}
+		delete from
+		hxc_video_tags where video_id = #{videoId}
 	</delete>
-	
-	<select id="getUrlNull"  resultType="detailDTO">
-	select * from hxc_video where	(url = '' OR url IS NULL)
-AND id IN (
-	SELECT DISTINCT
-video_id
-	FROM
-hxc_video_tags
-	WHERE
-tag_id IN (
-	SELECT
-id
-	FROM
-hxc_tags
-	WHERE
-tag_name IN (
-	'精选系列',
-	'国产',
-	'网红',
-	'主播'
-)
-)
-)
+
+	<select id="getUrlNull" resultType="detailDTO">
+		select * from hxc_video where
+		(url = '' OR url IS NULL)
+		AND id IN (SELECT DISTINCT video_id FROM hxc_video_tags WHERE
+		tag_id IN (SELECT id FROM hxc_tags WHERE tag_name IN ('精选系列','国产','网红','主播')))
 	</select>
 	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
+	<select id="videoExist" parameterType="string" resultType="Integer">
+	select count(1) from hxc_video where id = #{ID}
+	</select>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 </mapper>

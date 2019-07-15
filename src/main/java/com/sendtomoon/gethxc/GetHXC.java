@@ -8,19 +8,29 @@ public class GetHXC {
 		AbstractApplicationContext context = new ClassPathXmlApplicationContext("spring.xml");
 		context.start();
 		Controller controller = context.getBean(Controller.class);
-		String SWITCH = "";
+		String SWITCH = "DOWNLOAD";
 		switch (SWITCH) {
 		case "RENEW_LIST":// 更新主表所有数据
 			controller.mainService();
+			break;
 		case "UPDATE_URL":// 更新URL地址
 			controller.updateUrl();
-		case "RENEW_SEQ":// 从本地更新序列、标签
+			break;
+		case "RENEW_TAG":// 从本地更新序列、标签
+			controller.renewTag();
+			break;
+		case "RENEW_FILENAME":// 从本地更新序列、标签
 			controller.renewFile();
+			break;
+		case "DOWNLOAD":// 下载
+			controller.startDownload();
+			break;
 		}
-		try {
-			Thread.currentThread().join();
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
+//		try {
+//			Thread.currentThread().join();
+//		} catch (InterruptedException e) {
+//			e.printStackTrace();
+//		}
+		context.close();
 	}
 }

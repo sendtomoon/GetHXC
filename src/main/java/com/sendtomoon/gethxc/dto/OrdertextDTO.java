@@ -7,11 +7,11 @@ public class OrdertextDTO extends BaseDTO {
 	 */
 	private static final long serialVersionUID = -2014625941660391391L;
 	private String column;
-	private String desc;
+	private String dir;
 
-	public OrdertextDTO(String column, String desc) {
+	public OrdertextDTO(String column, String dir) {
 		this.column = column;
-		this.desc = desc;
+		this.dir = dir;
 	}
 
 	public String getColumn() {
@@ -22,11 +22,11 @@ public class OrdertextDTO extends BaseDTO {
 		this.column = column;
 	}
 
-	public String getDesc() {
-		return desc;
+	public String getDir() {
+		return dir;
 	}
 
-	public void setDesc(String desc) {
-		this.desc = desc;
+	public void setDir(String dir) {
+		this.dir = dir;
 	}
 }

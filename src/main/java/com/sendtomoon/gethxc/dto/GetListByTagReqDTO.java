@@ -1,5 +1,7 @@
 package com.sendtomoon.gethxc.dto;
 
+import java.util.List;
+
 public class GetListByTagReqDTO extends BaseDTO {
 
 	/**
@@ -11,14 +13,14 @@ public class GetListByTagReqDTO extends BaseDTO {
 	private Integer length;
 	private Integer searchtext;
 	private Integer start;
-	private OrdertextDTO ordertext;
+	private List<OrdertextDTO> ordertext;
 
 	public GetListByTagReqDTO() {
 
 	}
 
 	public GetListByTagReqDTO(Integer ClientType, Integer length, Integer searchtext, Integer start,
-			OrdertextDTO ordertext) {
+			List<OrdertextDTO> ordertext) {
 		this.ClientType = ClientType;
 		this.length = length;
 		this.searchtext = searchtext;
@@ -58,12 +60,12 @@ public class GetListByTagReqDTO extends BaseDTO {
 		this.start = start;
 	}
 
-	public OrdertextDTO getOrdertext() {
-		return ordertext;
+	public void setOrdertext(List<OrdertextDTO> ordertext) {
+		this.ordertext = ordertext;
 	}
 
-	public void setOrdertext(OrdertextDTO ordertext) {
-		this.ordertext = ordertext;
+	public List<OrdertextDTO> getOrdertext() {
+		return ordertext;
 	}
 
 }
