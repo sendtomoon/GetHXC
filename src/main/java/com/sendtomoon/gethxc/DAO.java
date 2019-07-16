@@ -1,6 +1,7 @@
 package com.sendtomoon.gethxc;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.stereotype.Repository;
 
@@ -40,4 +41,6 @@ public interface DAO {
 	public List<VideoDTO> getUrlNull();
 
 	public int videoExist(String id);
+
+	public void addError(Map<String, String> map);
 }

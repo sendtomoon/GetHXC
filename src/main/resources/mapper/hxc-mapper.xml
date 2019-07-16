@@ -125,7 +125,9 @@
 	</select>
 
 
-
+<insert id="addError" parameterType="map">
+insert into error_info (video_id,url,file) values (#id#,#url#,#file#)
+</insert>
 
 
 
