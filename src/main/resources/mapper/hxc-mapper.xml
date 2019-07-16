@@ -21,15 +21,8 @@
 	</select>
 
 	<insert id="add" parameterType="detailDTO">
-		insert into
-		hxc_video
-		(
-		<include refid="Field" />
-		)
-		values
-		(
-		<include refid="FieldValue" />
-		)
+		insert into hxc_video ( <include refid="Field" />)
+		values ( <include refid="FieldValue" /> )
 	</insert>
 
 	<select id="getHxcVideo" resultType="detailDTO">
@@ -126,7 +119,7 @@
 
 
 <insert id="addError" parameterType="map">
-insert into error_info (video_id,url,file) values (#id#,#url#,#file#)
+insert into error_info (video_id,url,file) values (#{id},#{url},#{file})
 </insert>
 
 

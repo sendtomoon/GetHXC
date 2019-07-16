@@ -11,10 +11,11 @@ public class Config {
 
 	static Properties properties = null;
 
+	private static final String BASE_DIR = System.getProperty("user.dir") + "//src//main//resources//";
+
 	public static void init() {
 		try {
-			InputStream is = new FileInputStream(
-					new File(System.getProperty("user.dir") + "//src//main//resources//config.properties"));
+			InputStream is = new FileInputStream(new File(BASE_DIR + "config.properties"));
 			properties = new Properties();
 			properties.load(is);
 			properties.setProperty("user.dir", System.getProperty("user.dir"));
@@ -26,7 +27,7 @@ public class Config {
 	}
 
 	/**
-	 * ��ȡvalue
+	 * 获取value
 	 * 
 	 * @param key
 	 * @return
@@ -39,14 +40,14 @@ public class Config {
 	}
 
 	/**
-	 * �������ļ���ȡͷ��Ϣ
+	 * 请求list header
 	 * 
 	 * @return
 	 */
 	public static Properties getHeader() {
 		InputStream is;
 		try {
-			is = new FileInputStream(new File(Config.value("user.dir") + "//src//main//resources//header.properties"));
+			is = new FileInputStream(new File(BASE_DIR + "header.properties"));
 			Properties properties = new Properties();
 			properties.load(is);
 			return properties;
@@ -58,10 +59,15 @@ public class Config {
 		return null;
 	}
 
+	/**
+	 * 请求client header
+	 * 
+	 * @return
+	 */
 	public static Properties getClientHeader() {
 		InputStream is;
 		try {
-			is = new FileInputStream(new File(Config.value("user.dir") + "//src//main//resources//clientheader.properties"));
+			is = new FileInputStream(new File(BASE_DIR + "clientheader.properties"));
 			Properties properties = new Properties();
 			properties.load(is);
 			return properties;
@@ -72,10 +78,16 @@ public class Config {
 		}
 		return null;
 	}
+
+	/**
+	 * 请求 login header
+	 * 
+	 * @return
+	 */
 	public static Properties getLoginHeader() {
 		InputStream is;
 		try {
-			is = new FileInputStream(new File(Config.value("user.dir") + "//src//main//resources//loginheader.properties"));
+			is = new FileInputStream(new File(BASE_DIR + "loginheader.properties"));
 			Properties properties = new Properties();
 			properties.load(is);
 			return properties;

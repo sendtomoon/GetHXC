@@ -1,9 +1,6 @@
 package com.sendtomoon.gethxc.servie;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.nio.channels.FileChannel;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -19,6 +16,7 @@ import com.sendtomoon.gethxc.config.Config;
 import com.sendtomoon.gethxc.dto.M3U8DTO;
 import com.sendtomoon.gethxc.dto.VideoDTO;
 import com.sendtomoon.gethxc.utils.DownloadUtils;
+import com.sendtomoon.gethxc.utils.ThreadSleepUtils;
 
 @Service
 public class DownloadService {
@@ -30,6 +28,9 @@ public class DownloadService {
 
 	@Autowired
 	private DownloadUtils du;
+
+	@Autowired
+	ThreadSleepUtils tsu;
 
 	ExecutorService cachedThreadPool = Executors.newCachedThreadPool();
 
@@ -66,6 +67,7 @@ public class DownloadService {
 		}
 //		String basePath = M3U8.getBasepath();
 		M3U8.getTsList().stream().parallel().forEach(ts -> {
+			tsu.sleep(10000);
 			String[] arr = ts.getFile().split("/");
 			File file = new File(Config.value("tempDir") + "/" + id + "/" + File.separator + arr[arr.length - 1]);
 			if (!file.exists()) {
@@ -74,10 +76,7 @@ public class DownloadService {
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
-				try {
-					Thread.sleep(125);
-				} catch (InterruptedException e1) {
-				}
+				tsu.sleep();
 				cachedThreadPool.execute(new Runnable() {
 					@Override
 					public void run() {
@@ -96,7 +95,6 @@ public class DownloadService {
 			}
 		});
 		System.out.println("SEQ:" + id + "----加入下载队列成功");
-//		mergeFiles(tfile.listFiles(), Config.value("downloadDir") + fileName + ".ts");
 	}
 
 	public M3U8DTO getM3U8ByURL(String m3u8URL) {
@@ -108,38 +106,4 @@ public class DownloadService {
 		return null;
 	}
 
-	public boolean mergeFiles(File[] fpaths, String resultPath) {
-		if (fpaths == null || fpaths.length < 1) {
-			return false;
-		}
-
-		if (fpaths.length == 1) {
-			return fpaths[0].renameTo(new File(resultPath));
-		}
-		for (int i = 0; i < fpaths.length; i++) {
-			if (!fpaths[i].exists() || !fpaths[i].isFile()) {
-				return false;
-			}
-		}
-		File resultFile = new File(resultPath);
-
-		try {
-			FileOutputStream fs = new FileOutputStream(resultFile, true);
-			FileChannel resultFileChannel = fs.getChannel();
-			FileInputStream tfs;
-			for (int i = 0; i < fpaths.length; i++) {
-				tfs = new FileInputStream(fpaths[i]);
-				FileChannel blk = tfs.getChannel();
-				resultFileChannel.transferFrom(blk, resultFileChannel.size(), blk.size());
-				tfs.close();
-				blk.close();
-			}
-			fs.close();
-			resultFileChannel.close();
-		} catch (Exception e) {
-			e.printStackTrace();
-			return false;
-		}
-		return true;
-	}
 }

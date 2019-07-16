@@ -5,6 +5,7 @@ import org.springframework.stereotype.Component;
 
 import com.sendtomoon.gethxc.servie.DownloadService;
 import com.sendtomoon.gethxc.servie.HXCInfoService;
+import com.sendtomoon.gethxc.servie.MergeService;
 
 @Component
 public class Controller {
@@ -14,6 +15,9 @@ public class Controller {
 
 	@Autowired
 	private DownloadService ds;
+	
+	@Autowired
+	private MergeService ms;
 
 	public void startDownload() {
 		ds.mainDown();
@@ -33,6 +37,10 @@ public class Controller {
 
 	public void mainService() {
 		is.mainService();
+	}
+	
+	public void mergeFiles() {
+		ms.mergeFiles();
 	}
 
 }
