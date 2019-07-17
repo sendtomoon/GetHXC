@@ -14,7 +14,7 @@ public class ThreadSleepUtils {
 
 	public void sleep() {
 		try {
-			Thread.sleep((long) (Math.random() * 3542));
+			Thread.sleep((long) (Math.random() * 2627));
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}

@@ -76,11 +76,11 @@ public class DownloadService {
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
-				tsu.sleep();
 				cachedThreadPool.execute(new Runnable() {
 					@Override
 					public void run() {
 						try {
+							tsu.sleep();
 							du.download(ts.getFile(), null, file);
 						} catch (Exception e) {
 							Map<String, String> map = new HashMap<String, String>();
