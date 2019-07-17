@@ -62,6 +62,21 @@
 		where  id = #{ID}
 	</update>
 	
+	<update id="renewVideo" parameterType="detailDTO">
+		update hxc_video set
+		collectionCount = #{collectionCount},
+		isHot = #{isHot},
+		isNeedLogin = #{isNeedLogin},
+		isRecomend = #{isRecomend},
+		isVip = #{isVip},
+		tags = #{tags},
+		seeCount = #{seeCount},
+		point = #{point},
+		length = #{length},
+		coverImgUrl = #{coverImgUrl}
+		where  id = #{ID}
+	</update>
+	
 	<update id="updateFileName" parameterType="detailDTO">
 		update hxc_video set fileName = #{fileName} where  id = #{ID}
 	</update>

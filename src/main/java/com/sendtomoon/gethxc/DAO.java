@@ -20,6 +20,8 @@ public interface DAO {
 
 	public int update(VideoDTO dto);
 
+	public int renewVideo(VideoDTO dto);
+
 	public int updateFileName(VideoDTO dto);
 
 	public int updateURL(VideoDTO dto);

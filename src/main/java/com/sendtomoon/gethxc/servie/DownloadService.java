@@ -34,6 +34,8 @@ public class DownloadService {
 
 	ExecutorService cachedThreadPool = Executors.newCachedThreadPool();
 
+//	ExecutorService cachedThreadPool = Executors.newFixedThreadPool(2);
+
 	public void mainDown() {
 		List<VideoDTO> list = dao.getWaitDown();
 		for (int i = 0; i < list.size(); i++) {
