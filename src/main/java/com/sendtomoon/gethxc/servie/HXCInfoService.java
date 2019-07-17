@@ -90,8 +90,9 @@ public class HXCInfoService {
 		System.err.println("总数：" + list.size());
 		for (int i = 0; i < list.size(); i++) {
 			VideoDTO dataDTO = list.get(i);
-			dataDTO.setSeq(i + 1);
+//			dataDTO.setSeq(i + 1);
 			if (this.hxcVideoExist(dataDTO.getID())) {
+				dataDTO.setSeq(dao.nextValue() + 1);
 				dao.add(dataDTO);
 				System.err.println("插入一条成功：" + dataDTO.getID());
 			} else {

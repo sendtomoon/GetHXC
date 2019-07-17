@@ -67,7 +67,7 @@ public class DownloadService {
 		}
 //		String basePath = M3U8.getBasepath();
 		M3U8.getTsList().stream().parallel().forEach(ts -> {
-			tsu.sleep(10000);
+			tsu.sleep(8000);
 			String[] arr = ts.getFile().split("/");
 			File file = new File(Config.value("tempDir") + "/" + id + "/" + File.separator + arr[arr.length - 1]);
 			if (!file.exists()) {

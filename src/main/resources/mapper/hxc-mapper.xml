@@ -82,13 +82,11 @@
 	</select>
 
 	<select id="nextValue" resultType="int">
-		select seq from hxc_video
-		order by seq desc limit 1
+		select seq from hxc_video order by seq desc limit 1
 	</select>
 
 	<select id="getTagId" parameterType="string" resultType="string">
-		select
-		id from hxc_tags where tag_name = #{string}
+		select id from hxc_tags where tag_name = #{string}
 	</select>
 
 	<insert id="insertTag" parameterType="string">
