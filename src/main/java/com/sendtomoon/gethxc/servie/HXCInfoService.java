@@ -7,12 +7,12 @@ import java.util.Map;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.sendtomoon.gethxc.DAO;
-import com.sendtomoon.gethxc.config.Config;
 import com.sendtomoon.gethxc.dto.GetListByTagReqDTO;
 import com.sendtomoon.gethxc.dto.GetListByTagRespDTO;
 import com.sendtomoon.gethxc.dto.OrdertextDTO;
@@ -30,6 +30,15 @@ public class HXCInfoService {
 
 	@Autowired
 	private LoginHxcUtils login;
+
+	@Value("${getListByTag}")
+	String getListByTag;
+
+	@Value("${proxyURL}")
+	String proxyURL;
+
+	@Value("${getClient}")
+	String getClient;
 
 	public void renewFile() {
 		List<VideoDTO> list = dao.getHxcVideo();
@@ -55,6 +64,7 @@ public class HXCInfoService {
 		List<VideoDTO> list = dao.getUrlNull();
 		if (CollectionUtils.isNotEmpty(list)) {
 			String token = login.getToken();
+			System.err.println("总数：" + list.size());
 			for (VideoDTO dataDTO : list) {
 				String url = this.getClient(String.valueOf(dataDTO.getID()), token);
 				if (url == null) {
@@ -62,7 +72,7 @@ public class HXCInfoService {
 				}
 				dataDTO.setUrl(url);
 				dao.updateURL(dataDTO);
-				System.err.println(DateUtils.date() + "更新一条成功：" + dataDTO.getID());
+				System.err.println(DateUtils.date() + "：更新一条成功");
 			}
 		}
 	}
@@ -71,7 +81,7 @@ public class HXCInfoService {
 		for (int i = 0; i < 1; i++) {
 			GetListByTagRespDTO glbr = null;
 			try {
-				glbr = this.request(9999, 0);
+				glbr = this.request(29999, 0);
 			} catch (Exception e1) {
 				e1.printStackTrace();
 			} // 获取列表
@@ -127,9 +137,8 @@ public class HXCInfoService {
 		try {
 			Map<String, String> map = HeaderUtils.getClientHeader();
 			map.put("Token", token);
-			String str = HttpUtils.post(Config.value("getClient"),
-					"{\"videoID\":\"" + videoId + "\",\"userID\":2210195,\"ClientType\":5}", Config.value("proxyURL"),
-					map);
+			String str = HttpUtils.post(getClient,
+					"{\"videoID\":\"" + videoId + "\",\"userID\":2210195,\"ClientType\":5}", proxyURL, map);
 			Thread.sleep(1000);
 			if (!JSON.isValid(str)) {
 				return null;
@@ -146,9 +155,10 @@ public class HXCInfoService {
 	}
 
 	private GetListByTagRespDTO request(int rows, int startNum) throws Exception {
+		Map<String, String> map = HeaderUtils.getListHeader();
+		map.put("Token", login.getToken());
 		GetListByTagReqDTO glbt = new GetListByTagReqDTO(1, rows, null, startNum, this.getQueryParam());
-		String str = HttpUtils.post(Config.value("getListByTag"), JSON.toJSONString(glbt), Config.value("proxyURL"),
-				HeaderUtils.getListHeader());
+		String str = HttpUtils.post(getListByTag, JSON.toJSONString(glbt), proxyURL, map);
 		if (!JSON.isValid(str)) {
 			throw new Exception("JSON格式错误，获取失败");
 		}

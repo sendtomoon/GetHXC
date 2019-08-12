@@ -8,7 +8,7 @@ public class GetHXC {
 		AbstractApplicationContext context = new ClassPathXmlApplicationContext("spring.xml");
 		context.start();
 		Controller controller = context.getBean(Controller.class);
-		String SWITCH = "UPDATE_URL";
+		String SWITCH = "RENEW_LIST";
 		switch (SWITCH) {
 		case "RENEW_LIST":// 更新主表所有数据
 			controller.mainService();

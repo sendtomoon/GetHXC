@@ -6,20 +6,24 @@ import java.io.FileOutputStream;
 import java.nio.channels.FileChannel;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import com.sendtomoon.gethxc.DAO;
-import com.sendtomoon.gethxc.config.Config;
 import com.sendtomoon.gethxc.dto.VideoDTO;
 import com.sendtomoon.gethxc.utils.DateUtils;
 
 @Component
 public class MergeService {
+
 	@Autowired
 	DAO dao;
 
+	@Value("${tempDir}")
+	String tempDir;
+
 	public boolean mergeFiles() {
-		File tempFile = new File(Config.value("tempDir"));
+		File tempFile = new File(tempDir);
 		File[] tempFiles = tempFile.listFiles();
 		for (File idFile : tempFiles) {
 			try {

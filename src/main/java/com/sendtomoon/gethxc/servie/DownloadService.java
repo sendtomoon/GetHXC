@@ -8,11 +8,11 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import com.sendtomoon.gethxc.DAO;
 import com.sendtomoon.gethxc.M3U8NotFundException;
-import com.sendtomoon.gethxc.config.Config;
 import com.sendtomoon.gethxc.dto.M3U8DTO;
 import com.sendtomoon.gethxc.dto.VideoDTO;
 import com.sendtomoon.gethxc.utils.DownloadUtils;
@@ -31,6 +31,9 @@ public class DownloadService {
 
 	@Autowired
 	ThreadSleepUtils tsu;
+
+	@Value("${tempDir}")
+	String tempDir;
 
 //	ExecutorService cachedThreadPool = Executors.newCachedThreadPool();
 
@@ -61,7 +64,7 @@ public class DownloadService {
 	}
 
 	public void download(String m3u8url, String fileName, String id) throws Exception {
-		File tfile = new File(Config.value("tempDir") + "/" + id + "/");
+		File tfile = new File(tempDir + "/" + id + "/");
 		tfile.mkdirs();
 		M3U8DTO M3U8 = getM3U8ByURL(m3u8url);
 		if (null == M3U8) {
@@ -71,7 +74,7 @@ public class DownloadService {
 		M3U8.getTsList().stream().parallel().forEach(ts -> {
 			tsu.sleep(8000);
 			String[] arr = ts.getFile().split("/");
-			File file = new File(Config.value("tempDir") + "/" + id + "/" + File.separator + arr[arr.length - 1]);
+			File file = new File(tempDir + "/" + id + "/" + File.separator + arr[arr.length - 1]);
 			if (!file.exists()) {
 				try {
 					file.createNewFile();

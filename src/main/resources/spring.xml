@@ -9,7 +9,8 @@
         
     <context:component-scan base-package="com.sendtomoon" />
     
-    <context:property-placeholder ignore-unresolvable="true" location="classpath*:/datasource.properties" /> 
+    <context:property-placeholder ignore-unresolvable="false" location="classpath*:/datasource.properties" /> 
+    <context:property-placeholder ignore-unresolvable="false" location="classpath*:/config.properties" /> 
 
 	<bean id="_druidDataSource" class="com.alibaba.druid.pool.DruidDataSource" init-method="init" destroy-method="close">
 		<property name="driverClassName" value="org.mariadb.jdbc.Driver"></property>

@@ -1,17 +1,20 @@
 package com.sendtomoon.gethxc.utils;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import com.alibaba.fastjson.JSONObject;
-import com.sendtomoon.gethxc.config.Config;
 
 @Component
 public class LoginHxcUtils {
-	public static void main(String[] args) {
-		LoginHxcUtils ll = new LoginHxcUtils();
-		String token = ll.getToken();
-		System.err.println(token);
-	}
+	@Value("${loginURL}")
+	String loginURL;
+
+	@Value("${loginEntity}")
+	String loginEntity;
+
+	@Value("${proxyURL}")
+	String proxyURL;
 
 	public String getToken() {
 		return this.login().getJSONObject("data").getString("Token");
@@ -19,8 +22,7 @@ public class LoginHxcUtils {
 
 	private JSONObject login() {
 		try {
-			String result = HttpUtils.post(Config.value("loginURL"), Config.value("loginEntity"),
-					Config.value("proxyURL"), null);
+			String result = HttpUtils.post(loginURL, loginEntity, proxyURL, null);
 			JSONObject obj = JSONObject.parseObject(result);
 			return obj;
 		} catch (Exception e) {
