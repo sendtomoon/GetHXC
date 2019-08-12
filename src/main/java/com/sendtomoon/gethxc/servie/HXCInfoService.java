@@ -2,6 +2,7 @@ package com.sendtomoon.gethxc.servie;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -20,11 +21,15 @@ import com.sendtomoon.gethxc.dto.VideoTagsDTO;
 import com.sendtomoon.gethxc.utils.DateUtils;
 import com.sendtomoon.gethxc.utils.HeaderUtils;
 import com.sendtomoon.gethxc.utils.HttpUtils;
+import com.sendtomoon.gethxc.utils.LoginHxcUtils;
 
 @Service
 public class HXCInfoService {
 	@Autowired
 	private DAO dao;
+
+	@Autowired
+	private LoginHxcUtils login;
 
 	public void renewFile() {
 		List<VideoDTO> list = dao.getHxcVideo();
@@ -49,8 +54,9 @@ public class HXCInfoService {
 	public void updateUrl() {
 		List<VideoDTO> list = dao.getUrlNull();
 		if (CollectionUtils.isNotEmpty(list)) {
+			String token = login.getToken();
 			for (VideoDTO dataDTO : list) {
-				String url = this.getClient(String.valueOf(dataDTO.getID()));
+				String url = this.getClient(String.valueOf(dataDTO.getID()), token);
 				if (url == null) {
 					continue;
 				}
@@ -105,11 +111,12 @@ public class HXCInfoService {
 		return dao.videoExist(String.valueOf(id)) == 0 ? true : false;
 	}
 
-	private String getClient(String videoId) {
+	private String getClient(String videoId, String token) {
 		try {
+			Map<String, String> map = HeaderUtils.getClientHeader();
+			map.put("Token", token);
 			String str = HttpUtils.post(Config.value("getClient"),
-					"{\"videoID\":\"" + videoId + "\",\"userID\":2210195,\"ClientType\":5}", "127.0.0.1:1080",
-					HeaderUtils.getClientHeader());
+					"{\"videoID\":\"" + videoId + "\",\"userID\":2210195,\"ClientType\":5}", "127.0.0.1:1080", map);
 			Thread.sleep(1000);
 			if (!JSON.isValid(str)) {
 				return null;

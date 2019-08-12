@@ -32,9 +32,9 @@ public class DownloadService {
 	@Autowired
 	ThreadSleepUtils tsu;
 
-	ExecutorService cachedThreadPool = Executors.newCachedThreadPool();
+//	ExecutorService cachedThreadPool = Executors.newCachedThreadPool();
 
-//	ExecutorService cachedThreadPool = Executors.newFixedThreadPool(2);
+	ExecutorService cachedThreadPool = Executors.newFixedThreadPool(10);
 
 	public void mainDown() {
 		List<VideoDTO> list = dao.getWaitDown();

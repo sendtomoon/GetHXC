@@ -29,8 +29,6 @@ public class Config {
 	/**
 	 * 获取value
 	 * 
-	 * @param key
-	 * @return
 	 */
 	public static String value(String key) {
 		if (null == properties) {
@@ -42,7 +40,6 @@ public class Config {
 	/**
 	 * 请求list header
 	 * 
-	 * @return
 	 */
 	public static Properties getHeader() {
 		InputStream is;
@@ -62,32 +59,11 @@ public class Config {
 	/**
 	 * 请求client header
 	 * 
-	 * @return
 	 */
 	public static Properties getClientHeader() {
 		InputStream is;
 		try {
 			is = new FileInputStream(new File(BASE_DIR + "clientheader.properties"));
-			Properties properties = new Properties();
-			properties.load(is);
-			return properties;
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		return null;
-	}
-
-	/**
-	 * 请求 login header
-	 * 
-	 * @return
-	 */
-	public static Properties getLoginHeader() {
-		InputStream is;
-		try {
-			is = new FileInputStream(new File(BASE_DIR + "loginheader.properties"));
 			Properties properties = new Properties();
 			properties.load(is);
 			return properties;

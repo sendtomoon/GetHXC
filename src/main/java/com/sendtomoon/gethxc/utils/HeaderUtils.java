@@ -25,13 +25,5 @@ public class HeaderUtils {
 		}
 		return map;
 	}
-	
-	public static Map<String, String> getLoginHeader() {
-		Properties properties = Config.getLoginHeader();
-		Map<String, String> map = new LinkedHashMap<String, String>();
-		for (Entry<Object, Object> entry : properties.entrySet()) {
-			map.put((String) entry.getKey(), (String) entry.getValue());
-		}
-		return map;
-	}
+
 }

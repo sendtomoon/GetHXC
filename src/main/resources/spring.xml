@@ -12,8 +12,8 @@
 	<bean id="_druidDataSource" class="com.alibaba.druid.pool.DruidDataSource" init-method="init" destroy-method="close">
 		<property name="driverClassName" value="org.mariadb.jdbc.Driver"></property>
 		<property name="url" value="jdbc:mariadb://192.168.0.28:3306/hxc" />
-		<property name="username" value="hxc" />
-		<property name="password" value="hxc" />
+		<property name="username" value="root" />
+		<property name="password" value="5913215" />
 	</bean>
 
 	<bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">

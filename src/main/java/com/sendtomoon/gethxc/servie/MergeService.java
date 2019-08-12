@@ -22,27 +22,35 @@ public class MergeService {
 		File tempFile = new File(Config.value("tempDir"));
 		File[] tempFiles = tempFile.listFiles();
 		for (File idFile : tempFiles) {
-			Integer id = Integer.valueOf(idFile.getName());
-			VideoDTO dto = dao.getDTOById(id);
-			System.err.println(DateUtils.date() + " 当前：" + dto.getSeq());
-			File[] tss = idFile.listFiles();
-			File videoFile = new File("x:/success/" + dto.getFileName() + ".ts");
 			try {
-				FileOutputStream fs = new FileOutputStream(videoFile, true);
-				FileChannel resultFileChannel = fs.getChannel();
-				FileInputStream tfs;
-				for (int i = 0; i < tss.length; i++) {
-					tfs = new FileInputStream(tss[i]);
-					FileChannel blk = tfs.getChannel();
-					resultFileChannel.transferFrom(blk, resultFileChannel.size(), blk.size());
-					tfs.close();
-					blk.close();
+				if (idFile.exists()) {
+					idFile.delete();
 				}
-				fs.close();
-				resultFileChannel.close();
+				Integer id = Integer.valueOf(idFile.getName());
+				VideoDTO dto = dao.getDTOById(id);
+				System.err.println(DateUtils.date() + " 当前：" + dto.getSeq());
+				File[] tss = idFile.listFiles();
+				File videoFile = new File("x:/success/" + dto.getFileName() + ".ts");
+				try {
+					FileOutputStream fs = new FileOutputStream(videoFile, true);
+					FileChannel resultFileChannel = fs.getChannel();
+					FileInputStream tfs;
+					for (int i = 0; i < tss.length; i++) {
+						tfs = new FileInputStream(tss[i]);
+						FileChannel blk = tfs.getChannel();
+						resultFileChannel.transferFrom(blk, resultFileChannel.size(), blk.size());
+						tfs.close();
+						blk.close();
+					}
+					fs.close();
+					resultFileChannel.close();
+				} catch (Exception e) {
+					e.printStackTrace();
+					continue;
+				}
 			} catch (Exception e) {
 				e.printStackTrace();
-				return false;
+				continue;
 			}
 		}
 		return true;
