@@ -27,7 +27,6 @@ public class HttpUtils {
 	public static String post(String url, String request, String proxyUrl, Map<String, String> header)
 			throws Exception {
 		CloseableHttpClient httpclient = HttpClients.custom().build();
-
 		try {
 			HttpPost httpPost = new HttpPost(url);
 			if (MapUtils.isNotEmpty(header)) {
@@ -35,10 +34,8 @@ public class HttpUtils {
 					httpPost.addHeader(entry.getKey(), entry.getValue());
 				}
 			}
-
 			HttpUtils.setConfig(httpPost, proxyUrl, request);
 			CloseableHttpResponse response = httpclient.execute(httpPost);
-
 			try {
 				HttpEntity respEntity = response.getEntity();
 				if (respEntity != null) {

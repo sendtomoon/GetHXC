@@ -8,12 +8,14 @@
         http://www.springframework.org/schema/context/spring-context.xsd">
         
     <context:component-scan base-package="com.sendtomoon" />
+    
+    <context:property-placeholder ignore-unresolvable="true" location="classpath*:/datasource.properties" /> 
 
 	<bean id="_druidDataSource" class="com.alibaba.druid.pool.DruidDataSource" init-method="init" destroy-method="close">
 		<property name="driverClassName" value="org.mariadb.jdbc.Driver"></property>
-		<property name="url" value="jdbc:mariadb://192.168.0.28:3306/hxc" />
-		<property name="username" value="root" />
-		<property name="password" value="5913215" />
+		<property name="url" value="${jdbc.mysql.url}" />
+		<property name="username" value="${jdbc.mysql.username}" />
+		<property name="password" value="${jdbc.mysql.password}" />
 	</bean>
 
 	<bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">

@@ -13,6 +13,7 @@ public class GetListByTagReqDTO extends BaseDTO {
 	private Integer length;
 	private Integer searchtext;
 	private Integer start;
+	private Integer IsVIP = 1;
 	private List<OrdertextDTO> ordertext;
 
 	public GetListByTagReqDTO() {
@@ -66,6 +67,14 @@ public class GetListByTagReqDTO extends BaseDTO {
 
 	public List<OrdertextDTO> getOrdertext() {
 		return ordertext;
+	}
+
+	public Integer getIsVIP() {
+		return IsVIP;
+	}
+
+	public void setIsVIP(Integer isVIP) {
+		IsVIP = isVIP;
 	}
 
 }

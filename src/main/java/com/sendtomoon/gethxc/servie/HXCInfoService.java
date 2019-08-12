@@ -68,17 +68,29 @@ public class HXCInfoService {
 	}
 
 	public void mainService() {
-		GetListByTagRespDTO glbr = null;
-		try {
-			glbr = this.request(99999);
-		} catch (Exception e1) {
-			e1.printStackTrace();
-		} // 获取列表
-		List<VideoDTO> list = glbr.getData();
-		if (CollectionUtils.isNotEmpty(list)) {
+		for (int i = 0; i < 1; i++) {
+			GetListByTagRespDTO glbr = null;
 			try {
-				this.insert(list);
-			} catch (Exception e) {
+				glbr = this.request(9999, 0);
+			} catch (Exception e1) {
+				e1.printStackTrace();
+			} // 获取列表
+			if (glbr == null) {
+				break;
+			}
+			List<VideoDTO> list = glbr.getData();
+			if (CollectionUtils.isNotEmpty(list)) {
+				try {
+					this.insert(list);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			} else {
+				break;
+			}
+			try {
+				Thread.sleep(1579);
+			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
 		}
@@ -97,7 +109,7 @@ public class HXCInfoService {
 		for (int i = 0; i < list.size(); i++) {
 			VideoDTO dataDTO = list.get(i);
 			if (this.hxcVideoExist(dataDTO.getID())) {
-				dataDTO.setSeq(dao.nextValue() + 1);
+//				dataDTO.setSeq(dao.nextValue() + 1);
 				dao.add(dataDTO);
 				System.err.println("插入一条成功：" + dataDTO.getID());
 			} else {
@@ -116,7 +128,8 @@ public class HXCInfoService {
 			Map<String, String> map = HeaderUtils.getClientHeader();
 			map.put("Token", token);
 			String str = HttpUtils.post(Config.value("getClient"),
-					"{\"videoID\":\"" + videoId + "\",\"userID\":2210195,\"ClientType\":5}", "127.0.0.1:1080", map);
+					"{\"videoID\":\"" + videoId + "\",\"userID\":2210195,\"ClientType\":5}", Config.value("proxyURL"),
+					map);
 			Thread.sleep(1000);
 			if (!JSON.isValid(str)) {
 				return null;
@@ -132,9 +145,9 @@ public class HXCInfoService {
 		return null;
 	}
 
-	private GetListByTagRespDTO request(int rows) throws Exception {
-		GetListByTagReqDTO glbt = new GetListByTagReqDTO(1, 10000, null, 0, this.getQueryParam());
-		String str = HttpUtils.post(Config.value("getListByTag"), JSON.toJSONString(glbt), "127.0.0.1:1080",
+	private GetListByTagRespDTO request(int rows, int startNum) throws Exception {
+		GetListByTagReqDTO glbt = new GetListByTagReqDTO(1, rows, null, startNum, this.getQueryParam());
+		String str = HttpUtils.post(Config.value("getListByTag"), JSON.toJSONString(glbt), Config.value("proxyURL"),
 				HeaderUtils.getListHeader());
 		if (!JSON.isValid(str)) {
 			throw new Exception("JSON格式错误，获取失败");
