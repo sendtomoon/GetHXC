@@ -39,7 +39,7 @@ public class HXCInfoService {
 
 	@Value("${getClient}")
 	String getClient;
-
+	
 	public void renewFile() {
 		List<VideoDTO> list = dao.getHxcVideo();
 		for (int i = 0; i < list.size(); i++) {
