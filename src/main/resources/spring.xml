@@ -9,11 +9,15 @@
         
     <context:component-scan base-package="com.sendtomoon" />
     
-    <context:property-placeholder ignore-unresolvable="false" location="classpath*:/datasource.properties" /> 
-    <context:property-placeholder ignore-unresolvable="false" location="classpath*:/config.properties" /> 
+    <context:property-placeholder location="classpath:datasource.properties" /> 
+    <context:property-placeholder location="classpath:config.properties" /> 
+
+<bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+    <property name="location" value="classpath:config.properties"/>
+</bean>
 
 	<bean id="_druidDataSource" class="com.alibaba.druid.pool.DruidDataSource" init-method="init" destroy-method="close">
-		<property name="driverClassName" value="org.mariadb.jdbc.Driver"></property>
+		<property name="driverClassName" value="org.mariadb.jdbc.Driver" />
 		<property name="url" value="${jdbc.mysql.url}" />
 		<property name="username" value="${jdbc.mysql.username}" />
 		<property name="password" value="${jdbc.mysql.password}" />
