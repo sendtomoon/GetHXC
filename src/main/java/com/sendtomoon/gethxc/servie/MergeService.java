@@ -22,6 +22,9 @@ public class MergeService {
 	@Value("${tempDir}")
 	String tempDir;
 
+	@Value("${downloadDir}")
+	String downloadDir;
+
 	public boolean mergeFiles() {
 		File tempFile = new File(tempDir);
 		File[] tempFiles = tempFile.listFiles();
@@ -34,7 +37,7 @@ public class MergeService {
 				VideoDTO dto = dao.getDTOById(id);
 				System.err.println(DateUtils.date() + " 当前：" + dto.getSeq());
 				File[] tss = idFile.listFiles();
-				File videoFile = new File("x:/success/" + dto.getFileName() + ".ts");
+				File videoFile = new File(downloadDir + dto.getFileName() + ".ts");
 				try {
 					FileOutputStream fs = new FileOutputStream(videoFile, true);
 					FileChannel resultFileChannel = fs.getChannel();

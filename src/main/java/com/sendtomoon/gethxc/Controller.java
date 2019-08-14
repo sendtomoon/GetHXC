@@ -1,6 +1,7 @@
 package com.sendtomoon.gethxc;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Component;
 
 import com.sendtomoon.gethxc.servie.DownloadService;
@@ -8,6 +9,7 @@ import com.sendtomoon.gethxc.servie.HXCInfoService;
 import com.sendtomoon.gethxc.servie.MergeService;
 
 @Component
+@PropertySource("classpath:config.properties")
 public class Controller {
 
 	@Autowired

@@ -8,7 +8,7 @@ public class GetHXC {
 		AbstractApplicationContext context = new ClassPathXmlApplicationContext("spring.xml");
 		context.start();
 		Controller controller = context.getBean(Controller.class);
-		String SWITCH = "RENEW_LIST";
+		String SWITCH = "MERGE";
 		switch (SWITCH) {
 		case "RENEW_LIST":// 更新主表所有数据
 			controller.mainService();
@@ -19,7 +19,7 @@ public class GetHXC {
 		case "RENEW_TAG":// 从本地更新序列、标签
 			controller.renewTag();
 			break;
-		case "RENEW_FILENAME":// 从本地更新序列、标签
+		case "RENEW_FILENAME":// 从本地更新文件名
 			controller.renewFile();
 			break;
 		case "DOWNLOAD":// 下载

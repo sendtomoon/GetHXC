@@ -171,8 +171,7 @@
 		<append>true</append>
 		<!-- 日志打印的格式 -->
 		<encoder>
-			<pattern>%d{yyyy-MM-dd'T'HH:mm:ss.SSSXXX} %level ${PROJECT_NAME}
-				[%thread] [%logger{50}:%line] %msg%n</pattern>
+			<pattern>%d{yyyy-MM-dd'T'HH:mm:ss.SSSXXX} %level ${PROJECT_NAME} [%thread] [%logger{50}:%line] %msg%n</pattern>
 			<charset>utf-8</charset>
 		</encoder>
 	</appender>
@@ -183,7 +182,7 @@
 <!-- 		<Logger name="java.sql.Statement" level="info" /> -->
 <!-- 		<Logger name="java.sql.PreparedStatement" level="info" /> -->
 <!-- 		<Logger name="org.apache" level="info" /> -->
-		<Logger name="org.springframework" level="trace" />
+		<Logger name="org.springframework" level="INFO" />
 
 	<!-- 出厂默认输出level级别INFO, 排查问题时, 可以通过工具切换为TRACE. 自定义模块日志打印 添加在后面. name需要修改为自己项目中的合适的package -->
 	<logger name="com.sendtomoon" level="TRACE" additivity="false">
@@ -197,7 +196,7 @@
 </Loggers>
 
 	<!-- 其他的warn级别及其以上的日志，通过OTHER来记录 -->
-	<root level="TRACE">
+	<root level="INFO">
 <!-- 		<appender-ref ref="OTHER" /> -->
 			<appender-ref ref="STDOUT" />
 	</root>
