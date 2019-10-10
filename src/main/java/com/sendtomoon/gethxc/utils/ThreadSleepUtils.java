@@ -19,4 +19,9 @@ public class ThreadSleepUtils {
 			e.printStackTrace();
 		}
 	}
+
+	public static void main(String[] args) {
+		for (int i = 0; i <= 100; i++)
+			System.err.println((long) (Math.random() * 600 + Math.random() * 600));
+	}
 }
